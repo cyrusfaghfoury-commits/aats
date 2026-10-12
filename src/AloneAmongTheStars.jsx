@@ -154,6 +154,17 @@ const SHIP_SHAPES = {
     [0, -20], [7, -16], [11, -8], [13, 2], [12, 10], [8, 16],
     [0, 19], [-8, 16], [-12, 10], [-13, 2], [-11, -8], [-7, -16],
   ]),
+  // secret — Verdant Drift reward, organic and bulbous like a spore pod
+  spore: normalizeShape([
+    [0, -18], [6, -14], [10, -6], [14, 2], [10, 10], [4, 16],
+    [0, 20], [-4, 16], [-10, 10], [-14, 2], [-10, -6], [-6, -14],
+  ]),
+  // secret — Shattered Reliquary reward, an ornate ancient-relic silhouette
+  reliquary: normalizeShape([
+    [0, -26], [4, -18], [14, -14], [22, -4], [30, 4], [18, 8],
+    [10, 6], [6, 16], [10, 24], [0, 20], [-10, 24], [-6, 16],
+    [-10, 6], [-18, 8], [-30, 4], [-22, -4], [-14, -14], [-4, -18],
+  ]),
 };
 const SHIP_SHAPE_LIST = [
   { id: "interceptor", label: "Interceptor" },
@@ -181,6 +192,8 @@ const SHOP_SHAPES = [
   { id: "raptor", label: "Raptor", cost: 5 },
   { id: "quantum", label: "Quantum Fighter", cost: 10, premium: true },
   { id: "egg", label: "Easter Egg", cost: 0, secret: true },
+  { id: "spore", label: "Spore Hull", cost: 0, secret: true },
+  { id: "reliquary", label: "Reliquary Wing", cost: 0, secret: true, premium: true },
 ];
 
 // Rainbow ship colors, plus the animated Rainbow special.
@@ -195,6 +208,8 @@ const SHOP_COLORS = [
   { id: "sh_pink", hex: "#ff6fae", label: "Pink", cost: 3 },
   { id: "sh_teal", hex: "#1abc9c", label: "Teal", cost: 3 },
   { id: "sh_rainbow", hex: "rainbow", label: "Rainbow", cost: 5, isRainbow: true },
+  { id: "sh_nebula", hex: "#ff5ff0", label: "Nebula Bloom", cost: 0, secret: true },
+  { id: "sh_voidforged", hex: "#1a0022", label: "Voidforged", cost: 0, secret: true },
 ];
 
 // Engine trail color variants — a fading particle stream behind the ship.
@@ -209,6 +224,7 @@ const SHOP_TRAILS = [
   { id: "tr_pink", hex: "#ff6fae", label: "Pink Trail", cost: 2 },
   { id: "tr_white", hex: "#ffffff", label: "White Trail", cost: 2 },
   { id: "tr_gold", hex: "#ffd700", label: "Gold Trail", cost: 2 },
+  { id: "tr_voltage", hex: "#f5f000", label: "Voltage Trail", cost: 0, secret: true },
 ];
 
 // Bullet types — the 5 requested plus a few extra variants. Most are
@@ -224,6 +240,7 @@ const SHOP_BULLETS = [
   { id: "bl_plasma", label: "Plasma Bullets", cost: 5, detail: "crackling electric bolts" },
   { id: "bl_toxic", label: "Toxic Bullets", cost: 5, detail: "a dripping venomous green trail" },
   { id: "bl_banana", label: "Banana Bullets", cost: 5, detail: "bananas bananas bananas" },
+  { id: "bl_cinder", label: "Cinder Rounds", cost: 0, secret: true, detail: "glowing ember rounds with rising sparks" },
 ];
 const BULLET_TYPE_COLORS = {
   bl_fire: "#ff6a1a",
@@ -235,6 +252,7 @@ const BULLET_TYPE_COLORS = {
   bl_plasma: "#f5f000",
   bl_toxic: "#7dff4a",
   bl_banana: "#f5d505",
+  bl_cinder: "#ff8a3d",
 };
 function bulletDamage(s, b) {
   const p = s.player;
@@ -256,7 +274,7 @@ const TUTORIAL_PAGES = [
   {
     icon: "⚠️",
     title: "System Faults",
-    body: "Roughly every 15 seconds a random fault hits your ship: Nav Locked (controls frozen), Weapons Offline (can't fire), Thruster Failure (badly slowed for a few seconds), or rarely a Hull Breach that costs a life outright. Watch the alert at the top of the screen.",
+    body: "Roughly every 15 seconds a random fault hits your ship: Nav Locked (controls frozen), Weapons Offline (can't fire), Thruster Failure (badly slowed for a few seconds), or, 1 time in 20 (5%), a Hull Breach that costs a life outright. Watch the alert at the top of the screen.",
   },
   {
     icon: "🪨",
@@ -604,8 +622,135 @@ const WORLDS = {
     extraBossMove: true,
     isFinalWorld: true,
   },
+  nebulaReach: {
+    id: "nebulaReach",
+    name: "The Nebula Reach",
+    powerups: FRONTIER_POWERUPS,
+    rockStyle: "cloud",
+    bossHpMult: 3.2,
+    bossSpeedMult: 0.66,
+    extraBossMove: true,
+    freeExplore: true,
+    trophyType: "nebulaShard",
+  },
+  emberBelt: {
+    id: "emberBelt",
+    name: "The Ember Belt",
+    powerups: OUTWORLD_POWERUPS,
+    rockStyle: "comet",
+    bossHpMult: 3.4,
+    bossSpeedMult: 0.64,
+    extraBossMove: true,
+    freeExplore: true,
+    trophyType: "emberCore",
+  },
+  ionStorm: {
+    id: "ionStorm",
+    name: "The Ion Storm",
+    powerups: WORMHOLE_POWERUPS,
+    rockStyle: "plasma",
+    bossHpMult: 3.6,
+    bossSpeedMult: 0.62,
+    extraBossMove: true,
+    freeExplore: true,
+    trophyType: "ionCell",
+  },
+  verdantDrift: {
+    id: "verdantDrift",
+    name: "The Verdant Drift",
+    powerups: POWERUPS,
+    rockStyle: "rock",
+    bossHpMult: 3.8,
+    bossSpeedMult: 0.6,
+    extraBossMove: true,
+    freeExplore: true,
+    trophyType: "sporePod",
+  },
+  shatteredReliquary: {
+    id: "shatteredReliquary",
+    name: "The Shattered Reliquary",
+    powerups: FRONTIER_POWERUPS,
+    rockStyle: "crystal",
+    bossHpMult: 4,
+    bossSpeedMult: 0.58,
+    extraBossMove: true,
+    freeExplore: true,
+    trophyType: "relicFragment",
+  },
+  sealedVault: {
+    id: "sealedVault",
+    name: "The Sealed Vault",
+    powerups: WORMHOLE_POWERUPS,
+    rockStyle: "plasma",
+    bossHpMult: 1, // irrelevant — the vault boss uses its own fixed HP values
+    bossSpeedMult: 0.5,
+    extraBossMove: true,
+    hidden: true,
+  },
 };
 const WORLD_ORDER = ["homeworld", "frontier", "outworld", "wormhole"];
+
+// The 5 Free Explore worlds — only reachable from the solar-system screen
+// after the main game is completed. They unlock in this order, each
+// requiring 5 of that PREVIOUS world's own intergalactic trophy type
+// (Homeworld/Frontier/etc.'s starter worlds are always open here too,
+// they just don't need unlocking since you've already finished the game).
+const FREE_EXPLORE_ORDER = ["nebulaReach", "emberBelt", "ionStorm", "verdantDrift", "shatteredReliquary"];
+
+// Metadata for each Free Explore world's own trophy currency — collecting
+// 5 of a given type unlocks the next world in FREE_EXPLORE_ORDER. These are
+// never spent, just accumulated as a permanent unlock key.
+const INTERGALACTIC_TROPHIES = {
+  nebulaShard: { label: "Nebula Shard", icon: "🔷", world: "nebulaReach" },
+  emberCore: { label: "Ember Core", icon: "🔥", world: "emberBelt" },
+  ionCell: { label: "Ion Cell", icon: "⚡", world: "ionStorm" },
+  sporePod: { label: "Spore Pod", icon: "🌱", world: "verdantDrift" },
+  relicFragment: { label: "Relic Fragment", icon: "🏺", world: "shatteredReliquary" },
+};
+const DEFAULT_INTERGALACTIC_TROPHIES = { nebulaShard: 0, emberCore: 0, ionCell: 0, sporePod: 0, relicFragment: 0 };
+
+// The Vault only reveals itself once every Free Explore world's boss has
+// actually been beaten AND all 5 shard types have reached 5 — matching
+// "beat all the worlds, then use all your shards to break the lock."
+// (the shards are only ever REQUIRED — they are never taken away)
+// A world only counts as defeated once its mega boss has been beaten AND
+// all 5 of its shards are collected — one rule, used everywhere it's shown.
+function isWorldComplete(worldId, stats, igTrophies) {
+  const type = WORLDS[worldId] && WORLDS[worldId].trophyType;
+  if (!type) return false;
+  return !!stats[`${worldId}Defeated`] && (igTrophies[type] || 0) >= 5;
+}
+
+function isVaultUnlockable(stats, igTrophies) {
+  const allWorldsBeaten = FREE_EXPLORE_ORDER.every((w) => isWorldComplete(w, stats, igTrophies));
+  const allShardsReady = Object.keys(DEFAULT_INTERGALACTIC_TROPHIES).every((type) => (igTrophies[type] || 0) >= 5);
+  return allWorldsBeaten && allShardsReady;
+}
+
+// Nebula Reach is always open once Free Explore is accessible; each world
+// after that unlocks once the PREVIOUS world's trophy count reaches 5.
+function isFreeExploreWorldUnlocked(worldId, igTrophies) {
+  const idx = FREE_EXPLORE_ORDER.indexOf(worldId);
+  if (idx === -1) return false;
+  if (idx === 0) return true;
+  const prevType = WORLDS[FREE_EXPLORE_ORDER[idx - 1]].trophyType;
+  return (igTrophies[prevType] || 0) >= 5;
+}
+
+// Layout for the Free Explore solar-system screen — every world (the 4
+// starters plus the 5 new ones) gets a fixed position and color so the
+// player can fly around and shoot the one they want to enter.
+const PLANET_LAYOUT = [
+  { world: "homeworld", x: 130, y: 130, r: 30, color: "#ffb454" },
+  { world: "frontier", x: 390, y: 110, r: 28, color: "#4fd6ff" },
+  { world: "outworld", x: 250, y: 200, r: 26, color: "#a020f0" },
+  { world: "wormhole", x: 450, y: 240, r: 27, color: "#1fa85a" },
+  { world: "nebulaReach", x: 90, y: 300, r: 25, color: "#ff8fd6" },
+  { world: "emberBelt", x: 330, y: 320, r: 27, color: "#ff6a1a" },
+  { world: "ionStorm", x: 440, y: 400, r: 25, color: "#f5f000" },
+  { world: "verdantDrift", x: 150, y: 430, r: 26, color: "#2ecc40" },
+  { world: "shatteredReliquary", x: 290, y: 470, r: 28, color: "#e0b3ff" },
+];
 
 // Recolors the travel cutscene per destination — icy blue for the
 // Frontier, purple for the Outworld, dark green for the Wormhole (which
@@ -700,7 +845,8 @@ const DEGRADES = [
     id: "loselife",
     label: "HULL BREACH",
     detail: "-1 life",
-    weight: 5,
+    // no weight: Hull Breach is decided separately, at exactly
+    // HULL_BREACH_CHANCE, so its odds never depend on the other faults
     apply: (s) => {
       damagePlayer(s, "System Fault: Hull Breach");
     },
@@ -761,9 +907,11 @@ function getAudioCtx() {
   return sharedAudioCtx;
 }
 
-function tone(ctx, { freq, endFreq, duration, type = "square", vol = 0.25, delay = 0 }) {
+function tone(ctx, { freq, endFreq, duration, type = "square", vol = 0.25, delay = 0, at }) {
   if (!ctx) return;
-  const now = ctx.currentTime + delay;
+  // `at` is an absolute audio-clock start time (used by the music so notes
+  // land exactly on the beat); otherwise `delay` is relative to right now
+  const now = at !== undefined ? at : ctx.currentTime + delay;
   const osc = ctx.createOscillator();
   osc.type = type;
   osc.frequency.setValueAtTime(freq, now);
@@ -775,6 +923,50 @@ function tone(ctx, { freq, endFreq, duration, type = "square", vol = 0.25, delay
   osc.connect(gain).connect(ctx.destination);
   osc.start(now);
   osc.stop(now + duration + 0.02);
+}
+
+// ---------- music engine ----------
+// The old loop fired each note from a setInterval, so any busy frame (or a
+// throttled phone / background tab) delayed notes and the tempo wobbled and
+// stuttered. This keeps the beat on the AUDIO clock instead: a light timer
+// only has to stay a little ahead, and every note is booked at an exact
+// time, so the tempo is rock steady no matter what the page is doing.
+const MUSIC_STEP = 0.19; // seconds per step — same tempo as before
+const MUSIC_LOOKAHEAD = 0.4; // how far ahead notes are booked (seconds)
+const MUSIC_MELODY = [392, 440, 523.25, 659.25, 523.25, 440, 392, 349.23];
+const MUSIC_BASS = [196, 196, 130.81, 130.81];
+const musicEngine = { timer: null, next: 0, step: 0 };
+
+function musicTick() {
+  const c = getAudioCtx(); // null while muted
+  if (!c || (typeof document !== "undefined" && document.hidden)) {
+    musicEngine.next = 0; // re-sync the grid when sound/visibility returns
+    return;
+  }
+  const now = c.currentTime;
+  // first start, or coming back from a pause/suspend: begin a fresh grid
+  // instead of rapid-firing a backlog of missed notes
+  if (musicEngine.next === 0 || musicEngine.next < now - 0.05) musicEngine.next = now + 0.06;
+  while (musicEngine.next < now + MUSIC_LOOKAHEAD) {
+    const at = musicEngine.next;
+    const s = musicEngine.step;
+    tone(c, { freq: MUSIC_MELODY[s % MUSIC_MELODY.length], duration: 0.17, type: "square", vol: 0.05, at });
+    if (s % 2 === 0) {
+      tone(c, { freq: MUSIC_BASS[(s / 2) % MUSIC_BASS.length], duration: 0.32, type: "triangle", vol: 0.06, at });
+    }
+    musicEngine.step = s + 1;
+    musicEngine.next += MUSIC_STEP;
+  }
+}
+function startMusic() {
+  if (musicEngine.timer) return; // already running — never restart the beat
+  musicEngine.timer = setInterval(musicTick, 50);
+  musicTick();
+}
+function stopMusic() {
+  if (musicEngine.timer) clearInterval(musicEngine.timer);
+  musicEngine.timer = null;
+  musicEngine.next = 0;
 }
 
 function noiseBurst(ctx, { duration = 0.4, vol = 0.5, filterStart = 1500, filterEnd = 80 } = {}) {
@@ -897,6 +1089,33 @@ function setBananaLoopActive(active) {
 }
 
 const sfx = {
+  // Vault: shards gathering around the ship (a long rising shimmer)
+  shardCharge() {
+    const ctx = getAudioCtx();
+    tone(ctx, { freq: 330, endFreq: 1320, duration: 2.5, type: "sine", vol: 0.07 });
+    tone(ctx, { freq: 165, endFreq: 660, duration: 2.5, type: "triangle", vol: 0.06 });
+  },
+  // Vault: shards rushing into the ship
+  shardAbsorb() {
+    const ctx = getAudioCtx();
+    tone(ctx, { freq: 600, endFreq: 2400, duration: 0.4, type: "square", vol: 0.05 });
+    tone(ctx, { freq: 300, endFreq: 1200, duration: 0.4, type: "sine", vol: 0.08 });
+  },
+  // Vault: the ship blazing up with the shards' power
+  shardPower() {
+    const ctx = getAudioCtx();
+    [523.25, 659.25, 783.99, 1046.5].forEach((f, i) =>
+      tone(ctx, { freq: f, duration: 0.9, type: "sine", vol: 0.07, delay: i * 0.03 })
+    );
+    noiseBurst(ctx, { duration: 0.5, vol: 0.18, filterStart: 6000, filterEnd: 300 });
+  },
+  // Vault: victory fanfare (rising arpeggio)
+  vaultVictory() {
+    const ctx = getAudioCtx();
+    [392, 493.88, 587.33, 783.99, 987.77].forEach((f, i) =>
+      tone(ctx, { freq: f, duration: 0.9, type: "sine", vol: 0.07, delay: i * 0.16 })
+    );
+  },
   hit() {
     const ctx = getAudioCtx();
     tone(ctx, { freq: 260, endFreq: 70, duration: 0.18, type: "square", vol: 0.28 });
@@ -1004,6 +1223,266 @@ function drawLaserBolt(ctx, x, y, vx, vy, len, width, core, glow) {
   ctx.restore();
 }
 
+// ---------- Vault: shard power-up + victory scene helpers ----------
+// colors of the five shard types: nebula, ember, ion, spore, relic
+const VAULT_SHARD_COLORS = ["#ff8fd6", "#ff6a1a", "#f5f000", "#2ecc40", "#e0b3ff"];
+const VAULT_POWER_ORBIT_FRAMES = 150; // 2.5 seconds at 60fps
+const VAULT_POWER_ABSORB_FRAMES = 26;
+
+// 25 shards (5 of each type) in five rings around the ship
+function makeVaultPower() {
+  const shards = [];
+  for (let g = 0; g < 5; g++) {
+    for (let i = 0; i < 5; i++) {
+      shards.push({ group: g, a: (i / 5) * Math.PI * 2 + g * 0.7, r: 30 + g * 9 });
+    }
+  }
+  return { phase: "orbit", t: 0, flash: 0, shards };
+}
+
+// advances the power-up one frame: orbit (2.5s, speeding up) -> absorb ->
+// empowered (stays on for the rest of the fight)
+function updateVaultPower(s) {
+  const vp = s.vaultPower;
+  if (!vp) return;
+  vp.t++;
+  if (vp.flash > 0) vp.flash = Math.max(0, vp.flash - 0.03);
+  const dir = (g) => (g % 2 ? -1 : 1);
+  if (vp.phase === "orbit") {
+    const speedUp = 1 + (vp.t / VAULT_POWER_ORBIT_FRAMES) * 2.2;
+    vp.shards.forEach((sh) => (sh.a += (0.04 + sh.group * 0.011) * dir(sh.group) * speedUp));
+    if (vp.t >= VAULT_POWER_ORBIT_FRAMES) {
+      vp.phase = "absorb";
+      vp.t = 0;
+      sfx.shardAbsorb();
+    }
+  } else if (vp.phase === "absorb") {
+    vp.shards.forEach((sh) => (sh.a += (0.04 + sh.group * 0.011) * dir(sh.group) * 6));
+    if (vp.t >= VAULT_POWER_ABSORB_FRAMES) {
+      vp.phase = "empowered";
+      vp.t = 0;
+      vp.flash = 1;
+      s.shakeT = Math.max(s.shakeT || 0, 14);
+      if (s.boss) s.boss.powerLock = false;
+      s.alert = { text: "SHARD POWER — FINISH IT", t: 150, warn: false };
+      sfx.shardPower();
+      for (let i = 0; i < 40; i++) {
+        const ang = Math.random() * Math.PI * 2;
+        const sp = 1.5 + Math.random() * 5;
+        s.particles.push({
+          x: s.player.x,
+          y: s.player.y,
+          vx: Math.cos(ang) * sp,
+          vy: Math.sin(ang) * sp,
+          life: 30 + Math.floor(Math.random() * 20),
+          c: "#ffffff",
+        });
+      }
+    }
+  }
+}
+
+function vaultShardRadius(vp, sh) {
+  if (vp.phase === "orbit") {
+    const e = Math.min(1, vp.t / 24); // shards fly out from the ship at first
+    const ease = 1 - Math.pow(1 - e, 3);
+    return sh.r * ease * (1 + 0.1 * Math.sin(vp.t * 0.12 + sh.a));
+  }
+  if (vp.phase === "absorb") {
+    const e = vp.t / VAULT_POWER_ABSORB_FRAMES;
+    return sh.r * (1 - e * e); // accelerates inward
+  }
+  return 0;
+}
+
+// the white light that blazes around the ship (drawn BEHIND the hull)
+function drawVaultPowerBack(ctx, s) {
+  const vp = s.vaultPower;
+  if (!vp) return;
+  let strength = 0;
+  if (vp.phase === "orbit") strength = 0.18 + 0.32 * (vp.t / VAULT_POWER_ORBIT_FRAMES);
+  else if (vp.phase === "absorb") strength = 0.5 + 0.5 * (vp.t / VAULT_POWER_ABSORB_FRAMES);
+  else strength = 1;
+  const pulse = vp.phase === "empowered" ? 0.88 + 0.12 * Math.sin(s.t * 0.2) : 1;
+  const x = s.player.x;
+  const y = s.player.y;
+  ctx.save();
+  ctx.globalCompositeOperation = "lighter";
+  const big = ctx.createRadialGradient(x, y, 0, x, y, 190);
+  big.addColorStop(0, `rgba(255,255,255,${0.62 * strength * pulse})`);
+  big.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = big;
+  ctx.fillRect(x - 190, y - 190, 380, 380);
+  const mid = ctx.createRadialGradient(x, y, 0, x, y, 104);
+  mid.addColorStop(0, `rgba(255,255,255,${1 * strength * pulse})`);
+  mid.addColorStop(0.5, `rgba(255,255,255,${0.88 * strength * pulse})`);
+  mid.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.fillStyle = mid;
+  ctx.fillRect(x - 104, y - 104, 208, 208);
+  ctx.restore();
+}
+
+// shards, hull rim, shockwave and screen flash (drawn IN FRONT of the hull)
+function drawVaultPowerFront(ctx, s) {
+  const vp = s.vaultPower;
+  if (!vp) return;
+  const x = s.player.x;
+  const y = s.player.y;
+  ctx.save();
+  ctx.globalCompositeOperation = "lighter";
+  if (vp.phase === "orbit" || vp.phase === "absorb") {
+    // faint orbit rings
+    if (vp.phase === "orbit") {
+      for (let g = 0; g < 5; g++) {
+        ctx.globalAlpha = 0.14;
+        ctx.strokeStyle = VAULT_SHARD_COLORS[g];
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(x, y, (30 + g * 9) * Math.min(1, vp.t / 24), 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+    vp.shards.forEach((sh) => {
+      const rad = vaultShardRadius(vp, sh);
+      const px = x + Math.cos(sh.a) * rad;
+      const py = y + Math.sin(sh.a) * rad;
+      const col = VAULT_SHARD_COLORS[sh.group];
+      const size = vp.phase === "absorb" ? 4.2 * (1 - vp.t / VAULT_POWER_ABSORB_FRAMES) + 1 : 4.2;
+      // comet tail trailing behind the shard
+      const tx = x + Math.cos(sh.a - 0.35 * (sh.group % 2 ? -1 : 1)) * rad;
+      const ty = y + Math.sin(sh.a - 0.35 * (sh.group % 2 ? -1 : 1)) * rad;
+      ctx.globalAlpha = 0.5;
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(tx, ty);
+      ctx.lineTo(px, py);
+      ctx.stroke();
+      // glow + diamond
+      const glow = ctx.createRadialGradient(px, py, 0, px, py, size * 3.2);
+      glow.addColorStop(0, col);
+      glow.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.globalAlpha = 0.85;
+      ctx.fillStyle = glow;
+      ctx.fillRect(px - size * 3.2, py - size * 3.2, size * 6.4, size * 6.4);
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = col;
+      ctx.beginPath();
+      ctx.moveTo(px, py - size);
+      ctx.lineTo(px + size * 0.7, py);
+      ctx.lineTo(px, py + size);
+      ctx.lineTo(px - size * 0.7, py);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.arc(px, py, size * 0.32, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  }
+  if (vp.phase === "empowered") {
+    // blazing white rim traced around the hull
+    const pts = SHIP_SHAPES[s.player.shape] || SHIP_SHAPES.interceptor;
+    ctx.translate(x, y);
+    ctx.globalAlpha = 0.75 + 0.25 * Math.sin(s.t * 0.25);
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 2.4;
+    ctx.beginPath();
+    pts.forEach(([px, py], i) => (i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py)));
+    ctx.closePath();
+    ctx.stroke();
+    ctx.translate(-x, -y);
+    if (s.t % 2 === 0 && s.particles.length < 260) {
+      s.particles.push({
+        x: x + (Math.random() - 0.5) * 26,
+        y: y + (Math.random() - 0.5) * 22,
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: -0.4 - Math.random() * 1.2,
+        life: 18,
+        c: "#ffffff",
+      });
+    }
+  }
+  // the burst the instant the shards are taken in
+  if (vp.flash > 0) {
+    ctx.globalAlpha = Math.min(1, vp.flash);
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 4 + vp.flash * 6;
+    ctx.beginPath();
+    ctx.arc(x, y, (1 - vp.flash) * 300, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.globalAlpha = vp.flash * 0.55;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+  }
+  ctx.restore();
+}
+
+// a player bullet once the ship is empowered: a long white-hot bolt with a
+// glowing head (layered strokes, no shadow blur, so it stays cheap even
+// with spread shots on a phone)
+function drawBrightBolt(ctx, b) {
+  const vx = b.vx !== undefined ? b.vx : b.vxOverride || 0;
+  const vy = b.vy !== undefined && b.vy !== 0 ? b.vy : -1;
+  const ang = Math.atan2(vy, vx);
+  const len = b.small ? 20 : 30;
+  ctx.save();
+  ctx.translate(b.x, b.y);
+  ctx.rotate(ang);
+  ctx.globalCompositeOperation = "lighter";
+  ctx.lineCap = "round";
+  ctx.strokeStyle = "#ffffff";
+  [[16, 0.16], [9, 0.38], [4.4, 1]].forEach(([w, a]) => {
+    ctx.globalAlpha = a;
+    ctx.lineWidth = w;
+    ctx.beginPath();
+    ctx.moveTo(-len / 2, 0);
+    ctx.lineTo(len / 2, 0);
+    ctx.stroke();
+  });
+  const head = ctx.createRadialGradient(len / 2, 0, 0, len / 2, 0, 15);
+  head.addColorStop(0, "rgba(255,255,255,1)");
+  head.addColorStop(1, "rgba(255,255,255,0)");
+  ctx.globalAlpha = 0.9;
+  ctx.fillStyle = head;
+  ctx.fillRect(len / 2 - 15, -15, 30, 30);
+  ctx.restore();
+}
+
+// the player's hull as a simple glowing silhouette (used by the victory scene)
+function drawShipSilhouette(ctx, shapeId, color, scale, glow = 0, glowColor = color) {
+  const pts = SHIP_SHAPES[shapeId] || SHIP_SHAPES.interceptor;
+  ctx.save();
+  ctx.scale(scale, scale);
+  if (glow > 0) {
+    ctx.shadowColor = glowColor;
+    ctx.shadowBlur = 24 * glow;
+  }
+  ctx.beginPath();
+  pts.forEach(([px, py], i) => (i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py)));
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.globalAlpha = 0.92;
+  ctx.fill();
+  ctx.globalAlpha = 1;
+  ctx.shadowBlur = 0;
+  ctx.strokeStyle = "rgba(255,255,255,0.85)";
+  ctx.lineWidth = 1.2 / scale;
+  ctx.stroke();
+  // canopy + twin engine glow
+  ctx.fillStyle = "rgba(150,230,255,0.9)";
+  ctx.beginPath();
+  ctx.ellipse(0, -4, 2.6, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = "rgba(255,200,120,0.9)";
+  [-5, 5].forEach((ex) => {
+    ctx.beginPath();
+    ctx.arc(ex, 13, 2.2, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  ctx.restore();
+}
+
 async function loadTrophies() {
   try {
     const res = await window.storage.get(TROPHY_KEY);
@@ -1090,8 +1569,151 @@ async function saveBestScore(n) {
   }
 }
 
+const INTERGALACTIC_KEY = "void-runner-intergalactic-trophies";
+
+// ---------- durable storage (shards + progress) ----------
+// These two hold the progress the Sealed Vault depends on, so they get the
+// strongest treatment: writes are queued one at a time (two quick saves can
+// never land out of order), every write is read back to confirm it stuck,
+// and a second backup copy lives in the browser's own storage. On load the
+// NEWER of the two copies wins. saveDiag feeds an on-screen status line in
+// Free Explore so a failing device is visible instead of silent.
+const saveDiag = {
+  selftest: "checking...",
+  launchProbe: "checking...",
+  shards: "no writes yet",
+  stats: "no writes yet",
+  loadedFrom: {},
+};
+const DURABLE_MIRROR = "aats-mirror:";
+const durableLatest = {};
+const durableChain = {};
+
+function durableUnwrap(x) {
+  if (x && typeof x === "object" && x.__v === 2) return { t: x.t || 0, data: x.data };
+  if (x && typeof x === "object") return { t: 0, data: x }; // older, unwrapped saves
+  return null;
+}
+
+async function durableLoad(key) {
+  let primary = null;
+  let mirror = null;
+  try {
+    const r = await window.storage.get(key);
+    if (r && r.value) primary = durableUnwrap(JSON.parse(r.value));
+  } catch {
+    // missing key or storage unavailable
+  }
+  try {
+    const m = window.localStorage.getItem(DURABLE_MIRROR + key);
+    if (m) mirror = durableUnwrap(JSON.parse(m));
+  } catch {
+    // backup unavailable
+  }
+  saveDiag.loadedFrom[key] =
+    primary && mirror ? "both copies" : primary ? "main copy" : mirror ? "BACKUP only" : "nothing found";
+  if (primary && mirror) return (mirror.t > primary.t ? mirror : primary).data;
+  return (primary || mirror || { data: null }).data;
+}
+
+function durableSave(key, obj, diagKey) {
+  durableLatest[key] = { __v: 2, t: Date.now(), data: obj };
+  durableChain[key] = (durableChain[key] || Promise.resolve())
+    .then(async () => {
+      const text = JSON.stringify(durableLatest[key]); // always the newest value
+      let stored = false;
+      let verified = false;
+      for (let i = 0; i < 3 && !stored; i++) {
+        try {
+          const r = await window.storage.set(key, text);
+          if (r) stored = true;
+        } catch {
+          // try again
+        }
+      }
+      if (stored) {
+        try {
+          const back = await window.storage.get(key);
+          verified = !!back && back.value === text;
+        } catch {
+          // couldn't read back — treated as unverified
+        }
+      }
+      let mirrored = false;
+      try {
+        window.localStorage.setItem(DURABLE_MIRROR + key, text);
+        mirrored = true;
+      } catch {
+        // backup unavailable
+      }
+      saveDiag[diagKey] = stored
+        ? verified
+          ? "saved OK"
+          : "saved (unconfirmed)"
+        : mirrored
+        ? "MAIN SAVE FAILED (backup kept)"
+        : "NOT SAVED";
+      return stored;
+    })
+    .catch(() => false);
+  return durableChain[key];
+}
+
+// Runs once at launch: does storage actually remember things between
+// sessions on this device? Shown on the Free Explore screen.
+async function runStorageProbe() {
+  const PROBE = "aats-probe";
+  let pn = null;
+  let mn = null;
+  try {
+    const r = await window.storage.get(PROBE);
+    if (r && r.value) pn = JSON.parse(r.value).n;
+  } catch {
+    // none yet
+  }
+  try {
+    const m = window.localStorage.getItem(DURABLE_MIRROR + PROBE);
+    if (m) mn = JSON.parse(m).n;
+  } catch {
+    // none yet
+  }
+  saveDiag.launchProbe = `last launch: main ${pn ? "#" + pn : "none"}, backup ${mn ? "#" + mn : "none"}`;
+  const text = JSON.stringify({ n: Math.max(pn || 0, mn || 0) + 1, t: Date.now() });
+  try {
+    window.localStorage.setItem(DURABLE_MIRROR + PROBE, text);
+  } catch {
+    // backup unavailable
+  }
+  try {
+    const w = await window.storage.set(PROBE, text);
+    const back = await window.storage.get(PROBE);
+    saveDiag.selftest = w && back && back.value === text ? "storage test OK" : "storage test FAILED";
+  } catch {
+    saveDiag.selftest = "storage test ERROR";
+  }
+}
+
+async function loadIntergalacticTrophies() {
+  const v = await durableLoad(INTERGALACTIC_KEY);
+  if (v && typeof v === "object") return { ...DEFAULT_INTERGALACTIC_TROPHIES, ...v };
+  return { ...DEFAULT_INTERGALACTIC_TROPHIES };
+}
+function saveIntergalacticTrophies(v) {
+  return durableSave(INTERGALACTIC_KEY, v, "shards");
+}
+
 // ---------- lifetime stats & achievements ----------
 const STATS_KEY = "void-runner-stats";
+// Maps each Free Explore world's "defeated" stat field to the shop item
+// it unlocks — checked in flushRunStats right after stats are merged.
+const WORLD_BEATEN_REWARD_MAP = {
+  nebulaReachDefeated: { category: "colors", id: "sh_nebula", label: "Nebula Bloom" },
+  emberBeltDefeated: { category: "bullets", id: "bl_cinder", label: "Cinder Rounds" },
+  ionStormDefeated: { category: "trails", id: "tr_voltage", label: "Voltage Trail" },
+  verdantDriftDefeated: { category: "shapes", id: "spore", label: "Spore Hull" },
+  shatteredReliquaryDefeated: { category: "shapes", id: "reliquary", label: "Reliquary Wing" },
+};
+
 const DEFAULT_STATS = {
   totalAsteroidsDestroyed: 0,
   totalBossesBeaten: 0,
@@ -1105,25 +1727,22 @@ const DEFAULT_STATS = {
   lifetimeTrophies: 0,
   foundOrangeCombo: false,
   foundBlackHole: false,
+  nebulaReachDefeated: false,
+  emberBeltDefeated: false,
+  ionStormDefeated: false,
+  verdantDriftDefeated: false,
+  shatteredReliquaryDefeated: false,
   unlocked: [], // achievement ids
 };
 
 async function loadStats() {
-  try {
-    const res = await window.storage.get(STATS_KEY);
-    const v = res ? JSON.parse(res.value) : null;
-    if (v && typeof v === "object") return { ...DEFAULT_STATS, ...v, unlocked: Array.isArray(v.unlocked) ? v.unlocked : [] };
-  } catch {
-    // fall through to default
-  }
+  const v = await durableLoad(STATS_KEY);
+  if (v && typeof v === "object")
+    return { ...DEFAULT_STATS, ...v, unlocked: Array.isArray(v.unlocked) ? v.unlocked : [] };
   return { ...DEFAULT_STATS };
 }
-async function saveStats(v) {
-  try {
-    await window.storage.set(STATS_KEY, JSON.stringify(v));
-  } catch (e) {
-    console.error("Could not save stats", e);
-  }
+function saveStats(v) {
+  return durableSave(STATS_KEY, v, "stats");
 }
 
 const ACHIEVEMENTS = [
@@ -1362,19 +1981,32 @@ function damagePlayer(s, cause) {
   }
 }
 
+// Every time a system fault hits, there is exactly this chance that it is
+// the Hull Breach (-1 life). The other faults share the remaining chance.
+const HULL_BREACH_CHANCE = 0.05;
+
 function rollDegrade(s) {
-  const total = DEGRADES.reduce((sum, d) => sum + d.weight, 0);
-  let r = Math.random() * total;
-  for (const d of DEGRADES) {
-    if (r < d.weight) {
-      d.apply(s);
-      s.alert = { text: `SYSTEM FAULT: ${d.label}`, t: 90, warn: d.id === "loselife" };
-      sfx.alarm();
-      vibrate(25);
-      return;
+  const breach = DEGRADES.find((d) => d.id === "loselife");
+  const others = DEGRADES.filter((d) => d.id !== "loselife");
+  let pick = null;
+  if (Math.random() < HULL_BREACH_CHANCE) {
+    pick = breach;
+  } else {
+    const total = others.reduce((sum, d) => sum + d.weight, 0);
+    let r = Math.random() * total;
+    for (const d of others) {
+      if (r < d.weight) {
+        pick = d;
+        break;
+      }
+      r -= d.weight;
     }
-    r -= d.weight;
+    if (!pick) pick = others[others.length - 1]; // float-edge safety
   }
+  pick.apply(s);
+  s.alert = { text: `SYSTEM FAULT: ${pick.label}`, t: 90, warn: pick.id === "loselife" };
+  sfx.alarm();
+  vibrate(25);
 }
 
 // Build one irregular, cratered rock silhouette. Generated once per rock at
@@ -1469,6 +2101,61 @@ function makeStarGeometry(size) {
 }
 const WORMHOLE_STAR_COLORS = ["#5ee6d0", "#ff5d5d", "#ffb454", "#c65bff", "#7dffb0", "#4fd6ff", "#ffe066", "#ff8fd6"];
 
+// Build one plasma shard for the Ion Storm — a jagged, spiky silhouette
+// (sharper and more irregular than the Wormhole's clean star points) with
+// a couple of branching "arc" lines crackling off it, rendered flickering.
+function makePlasmaGeometry(size) {
+  const spikes = 7 + Math.floor(rand(0, 4));
+  const outline = [];
+  for (let i = 0; i < spikes * 2; i++) {
+    const ang = (i / (spikes * 2)) * Math.PI * 2 + rand(-0.12, 0.12);
+    const r = i % 2 === 0 ? size * rand(1.0, 1.35) : size * rand(0.15, 0.35);
+    outline.push({ ang, r });
+  }
+  const arcCount = Math.floor(rand(2, 4));
+  const arcs = [];
+  for (let i = 0; i < arcCount; i++) {
+    const a1 = rand(0, Math.PI * 2);
+    const a2 = a1 + rand(0.8, 2.2);
+    arcs.push({
+      x1: Math.cos(a1) * size * rand(0.3, 0.6),
+      y1: Math.sin(a1) * size * rand(0.3, 0.6),
+      x2: Math.cos(a2) * size * rand(0.9, 1.3),
+      y2: Math.sin(a2) * size * rand(0.9, 1.3),
+      mx: Math.cos((a1 + a2) / 2) * size * rand(-0.3, 0.3),
+      my: Math.sin((a1 + a2) / 2) * size * rand(-0.3, 0.3),
+    });
+  }
+  return { outline, arcs };
+}
+const ION_STORM_COLORS = ["#f5f000", "#8fe8ff", "#ffffff", "#c9ff4d"];
+
+// Build one drifting gas cloud for the Nebula Reach — a soft, rounded,
+// wispy silhouette (no hard facets or spikes) rendered with translucent
+// layered blobs instead of a stroked polygon, so it reads as gas, not rock.
+function makeCloudGeometry(size) {
+  const lobeCount = 4 + Math.floor(rand(0, 3));
+  const lobes = [];
+  for (let i = 0; i < lobeCount; i++) {
+    const ang = (i / lobeCount) * Math.PI * 2 + rand(-0.2, 0.2);
+    const dist = size * rand(0.15, 0.55);
+    lobes.push({
+      x: Math.cos(ang) * dist,
+      y: Math.sin(ang) * dist,
+      r: size * rand(0.45, 0.8),
+    });
+  }
+  // still keep a soft rounded outline for collision silhouette purposes
+  const vertexCount = 10;
+  const outline = [];
+  for (let i = 0; i < vertexCount; i++) {
+    const ang = (i / vertexCount) * Math.PI * 2;
+    outline.push({ ang, r: size * rand(0.8, 1.05) });
+  }
+  return { outline, lobes };
+}
+const NEBULA_CLOUD_COLORS = ["#ff8fd6", "#c65bff", "#8fe8ff", "#e0b3ff"];
+
 function makeStars() {
   const layers = [
     { count: 45, speedRange: [0.2, 0.5], sizeRange: [0.5, 1.1], alpha: 0.35 },
@@ -1525,6 +2212,75 @@ const WORMHOLE_NEBULA_COLORS = [
   { c1: "rgba(10,80,50,0.16)", c2: "rgba(10,80,50,0)" },
 ];
 
+// Nebula palettes + background colors for the 5 Free Explore worlds, keyed
+// by world id so new worlds are just one lookup entry away.
+const WORLD_BG_COLOR = {
+  frontier: "#020611",
+  outworld: "#0a0316",
+  wormhole: "#020e08",
+  nebulaReach: "#170a22",
+  emberBelt: "#1c0904",
+  ionStorm: "#071420",
+  verdantDrift: "#03170b",
+  shatteredReliquary: "#151007",
+};
+const WORLD_NEBULA_COLORS = {
+  frontier: FRONTIER_NEBULA_COLORS,
+  outworld: OUTWORLD_NEBULA_COLORS,
+  wormhole: WORMHOLE_NEBULA_COLORS,
+  nebulaReach: [
+    { c1: "rgba(255,143,214,0.15)", c2: "rgba(255,143,214,0)" },
+    { c1: "rgba(160,90,255,0.12)", c2: "rgba(160,90,255,0)" },
+    { c1: "rgba(120,220,255,0.09)", c2: "rgba(120,220,255,0)" },
+  ],
+  emberBelt: [
+    { c1: "rgba(255,106,26,0.16)", c2: "rgba(255,106,26,0)" },
+    { c1: "rgba(255,60,30,0.12)", c2: "rgba(255,60,30,0)" },
+    { c1: "rgba(160,40,10,0.14)", c2: "rgba(160,40,10,0)" },
+  ],
+  ionStorm: [
+    { c1: "rgba(245,240,0,0.12)", c2: "rgba(245,240,0,0)" },
+    { c1: "rgba(90,220,255,0.13)", c2: "rgba(90,220,255,0)" },
+    { c1: "rgba(255,255,255,0.06)", c2: "rgba(255,255,255,0)" },
+  ],
+  verdantDrift: [
+    { c1: "rgba(46,204,64,0.14)", c2: "rgba(46,204,64,0)" },
+    { c1: "rgba(125,255,176,0.10)", c2: "rgba(125,255,176,0)" },
+    { c1: "rgba(20,100,40,0.14)", c2: "rgba(20,100,40,0)" },
+  ],
+  shatteredReliquary: [
+    { c1: "rgba(224,179,255,0.12)", c2: "rgba(224,179,255,0)" },
+    { c1: "rgba(255,215,0,0.10)", c2: "rgba(255,215,0,0)" },
+    { c1: "rgba(120,90,40,0.14)", c2: "rgba(120,90,40,0)" },
+  ],
+};
+
+// Boss hull colors per world — regular boss (primary/accent) and mega
+// boss (megaPrimary/megaAccent) variants.
+const WORLD_BOSS_COLORS = {
+  homeworld: { primary: COLORS.red, accent: COLORS.amber, megaPrimary: COLORS.violet, megaAccent: COLORS.cyan },
+  frontier: { primary: "#2fb8ff", accent: "#bff3ff", megaPrimary: "#8b5bff", megaAccent: "#e8fbff" },
+  outworld: { primary: "#9333ea", accent: "#e0b3ff", megaPrimary: "#c026ff", megaAccent: "#f3d9ff" },
+  wormhole: { primary: "#1a8a4a", accent: "#7dffb0", megaPrimary: "#0d5c3a", megaAccent: "#baffd9" },
+  nebulaReach: { primary: "#c65bff", accent: "#ffd6f7", megaPrimary: "#8b2fd6", megaAccent: "#ff8fd6" },
+  emberBelt: { primary: "#ff6a1a", accent: "#ffd9a0", megaPrimary: "#c0330a", megaAccent: "#ff9a4d" },
+  ionStorm: { primary: "#f5f000", accent: "#fffde0", megaPrimary: "#c9b800", megaAccent: "#8fe8ff" },
+  verdantDrift: { primary: "#2ecc40", accent: "#d4ffcf", megaPrimary: "#186e20", megaAccent: "#7dffb0" },
+  shatteredReliquary: { primary: "#c9a227", accent: "#ffe9b0", megaPrimary: "#8a6a1a", megaAccent: "#e0b3ff" },
+  sealedVault: { primary: "#6a0dad", accent: "#ff2b2b", megaPrimary: "#1a0022", megaAccent: "#ff2b2b" },
+};
+
+const WORLD_STAR_TINT = {
+  frontier: "#dff6ff",
+  outworld: "#e6d0ff",
+  wormhole: "#c8ffe0",
+  nebulaReach: "#ffd6f7",
+  emberBelt: "#ffd9a0",
+  ionStorm: "#fffbb0",
+  verdantDrift: "#d4ffcf",
+  shatteredReliquary: "#ffe9b0",
+};
+
 // The Outworld's background black hole — a real hazard, not just scenery.
 // Flying into it triggers the dedicated black-hole sequence.
 const BLACKHOLE_X = WIDTH * 0.76;
@@ -1545,12 +2301,22 @@ const BOSS_NAMES = {
   frontier: ["Frost Sentinel", "Glacier Warden", "Ice Reaver", "Cryo Vanguard"],
   outworld: ["Ember Reaver", "Solar Warden", "Comet Vanguard", "Inferno Sentinel"],
   wormhole: ["Star Warden", "Void Sentinel", "Nova Reaver", "Prism Vanguard"],
+  nebulaReach: ["Nebula Warden", "Gas Reaver", "Prism Sentinel", "Drift Vanguard"],
+  emberBelt: ["Cinder Reaver", "Magma Warden", "Ash Sentinel", "Forge Vanguard"],
+  ionStorm: ["Static Reaver", "Volt Warden", "Storm Sentinel", "Surge Vanguard"],
+  verdantDrift: ["Spore Reaver", "Bloom Warden", "Root Sentinel", "Thorn Vanguard"],
+  shatteredReliquary: ["Relic Warden", "Ruin Reaver", "Gilded Sentinel", "Shard Vanguard"],
 };
 const MEGA_BOSS_NAMES = {
   homeworld: "The Devastator",
   frontier: "The Glacial Colossus",
   outworld: "The Inferno Titan",
   wormhole: "The Void Empress",
+  nebulaReach: "The Nebula Sovereign",
+  emberBelt: "The Magma Warlord",
+  ionStorm: "The Storm Tyrant",
+  verdantDrift: "The Verdant Colossus",
+  shatteredReliquary: "The Reliquary Guardian",
 };
 
 function spawnBoss(s, bossIndex, tier, world) {
@@ -1607,8 +2373,51 @@ function spawnBoss(s, bossIndex, tier, world) {
   }
 }
 
+const VAULT_INVULN_FRAMES = 3600; // 60 seconds at 60fps
+const VAULT_BOSS_NAME = "The Cathode Sovereign";
+
+// The Sealed Vault's guardian — genuinely invulnerable for a full minute
+// (bullets connect and flash but never reduce its HP), using every attack
+// in the game at once. Once the clock runs out it visibly collapses into
+// an exhausted, gasping state with a tiny HP pool and no more attacks —
+// an easy finish after surviving the storm.
+function spawnVaultBoss(s) {
+  if (s.runStats) s.runStats.tookDamageThisBoss = false;
+  s.boss = {
+    tier: "mega",
+    world: "sealedVault",
+    name: VAULT_BOSS_NAME,
+    x: WIDTH / 2,
+    startY: -220,
+    y: -220,
+    targetY: 150,
+    hp: 999999,
+    maxHp: 999999,
+    state: "entrance",
+    stateTimer: MEGA_ENTRANCE_FRAMES,
+    entranceFrames: MEGA_ENTRANCE_FRAMES,
+    revealAlpha: 0,
+    moves: ["spread", "aimed", "laser", "burst", "homing", "bombardment"],
+    moveType: null,
+    moveCursor: -1,
+    speedFactor: 0.7,
+    laserX: WIDTH / 2,
+    fired: false,
+    flash: 0,
+    vaultPhase: "enraged",
+    vaultTimer: VAULT_INVULN_FRAMES,
+  };
+  s.bossBullets = [];
+  s.rocks = [];
+  s.alert = { text: `⚠⚠ ${VAULT_BOSS_NAME.toUpperCase()} AWAKENS ⚠⚠`, t: MEGA_ENTRANCE_FRAMES + 30, warn: true };
+  sfx.alarm();
+}
+
 export default function AloneAmongTheStars() {
   const canvasRef = useRef(null);
+  const gameBoxOuterRef = useRef(null);
+  const freeExploreFireRef = useRef(false);
+  const [gameBoxSize, setGameBoxSize] = useState({ w: WIDTH, h: HEIGHT });
   const [status, setStatus] = useState("cutscene"); // cutscene | tutorial | start | travel | playing | gameover | won | blackhole
   const [score, setScore] = useState(0);
   const [best, setBest] = useState(0);
@@ -1621,6 +2430,8 @@ export default function AloneAmongTheStars() {
   const [paused, setPaused] = useState(false);
   const [blackholeFailed, setBlackholeFailed] = useState(false);
   const [finalVictory, setFinalVictory] = useState(false);
+  const [vaultVictory, setVaultVictory] = useState(false);
+  const [vaultRetry, setVaultRetry] = useState(false); // true while the current run is a Vault attempt
   const [completedGame, setCompletedGame] = useState(false);
   const [audioReady, setAudioReady] = useState(false);
   const audioUnlockRef = useRef(null);
@@ -1646,19 +2457,27 @@ export default function AloneAmongTheStars() {
   const [achievementToast, setAchievementToast] = useState(null); // achievement object briefly shown
   const [runSummary, setRunSummary] = useState(null); // stats snapshot from the run that just ended
   const [loadoutPresets, setLoadoutPresets] = useState(DEFAULT_LOADOUT_PRESETS);
+  const [intergalacticTrophies, setIntergalacticTrophies] = useState(DEFAULT_INTERGALACTIC_TROPHIES);
+  const [freeExploreWorld, setFreeExploreWorld] = useState(null); // which world you flew into, if any
+  const [igTrophyToast, setIgTrophyToast] = useState(null);
 
   const stateRef = useRef(null);
   const trophiesRef = useRef(0);
   const trophiesDirtyRef = useRef(false);
+  const intergalacticTrophiesDirtyRef = useRef(false);
+  const statsDirtyRef = useRef(false);
   const shipConfigRef = useRef(DEFAULT_SHIP_CONFIG);
   const shipConfigDirtyRef = useRef(false);
   const ownedItemsRef = useRef(DEFAULT_OWNED);
   const statsRef = useRef(DEFAULT_STATS);
+  const intergalacticTrophiesRef = useRef(DEFAULT_INTERGALACTIC_TROPHIES);
   const ownedItemsDirtyRef = useRef(false);
   const pausedRef = useRef(false);
   const bgRef = useRef({ stars: makeStars(), nebulae: makeNebulae(), t: 0 });
   const cutsceneRef = useRef({ t: 0, figures: null, speedLines: null });
   const travelRef = useRef({ t: 0, stars: null, streaks: null });
+  const vaultCutsceneRef = useRef({ t: 0, stars: null, shards: null });
+  const vaultVictoryRef = useRef({ t: 0, stars: null, shards: null });
   const blackholeRef = useRef({ t: 0, embers: null });
   const blackholeCheckpointRef = useRef(null);
   const keysRef = useRef({});
@@ -1713,10 +2532,67 @@ export default function AloneAmongTheStars() {
     loadLoadoutPresets().then((v) => {
       if (!cancelled) setLoadoutPresets(v);
     });
+    runStorageProbe();
+    loadIntergalacticTrophies().then((v) => {
+      if (!cancelled) {
+        setIntergalacticTrophies(v);
+        intergalacticTrophiesRef.current = v;
+      }
+    });
     return () => {
       cancelled = true;
     };
   }, []);
+
+  // The game box fills available space differently depending on what's
+  // showing. During actual gameplay/cutscenes, the canvas pixels ARE the
+  // content, so its exact 520:680 aspect ratio must be preserved or
+  // everything looks stretched. On menu/overlay screens (Shop, Options,
+  // tutorial, etc.) the canvas is just a dim background behind an opaque
+  // HTML panel, so the box can use the full available height instead —
+  // giving those panels much more room to fit without scrolling.
+  useEffect(() => {
+    const el = gameBoxOuterRef.current;
+    if (!el) return;
+    const canvasCritical =
+      status === "playing" ||
+      status === "cutscene" ||
+      status === "travel" ||
+      status === "blackhole" ||
+      status === "homecoming" ||
+      status === "freeexplore" ||
+      status === "vaultCutscene" ||
+      status === "vaultVictory";
+    const fit = () => {
+      const availW = el.clientWidth;
+      const availH = el.clientHeight;
+      if (!availW || !availH) return;
+      if (canvasCritical) {
+        const ratio = WIDTH / HEIGHT;
+        let w = availW;
+        let h = w / ratio;
+        if (h > availH) {
+          h = availH;
+          w = h * ratio;
+        }
+        setGameBoxSize({ w: Math.floor(w), h: Math.floor(h) });
+      } else {
+        setGameBoxSize({ w: Math.floor(Math.min(availW, WIDTH)), h: Math.floor(availH) });
+      }
+    };
+    fit();
+    const t1 = setTimeout(fit, 50);
+    const t2 = setTimeout(fit, 300);
+    const ro = new ResizeObserver(fit);
+    ro.observe(el);
+    window.addEventListener("resize", fit);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      ro.disconnect();
+      window.removeEventListener("resize", fit);
+    };
+  }, [status]);
 
   const updateSettings = useCallback((patch) => {
     setSettings((prev) => {
@@ -1742,6 +2618,16 @@ export default function AloneAmongTheStars() {
     trophiesDirtyRef.current = true;
     const ok = await saveTrophies(n);
     if (ok && trophiesRef.current === n) trophiesDirtyRef.current = false;
+  }, []);
+
+  // Same retry-and-remember treatment as trophies/ship config/owned items —
+  // shards represent real progress (unlocking the next world, eventually
+  // the Vault) and shouldn't be lost to a single failed write.
+  const persistIntergalacticTrophies = useCallback(async (v) => {
+    intergalacticTrophiesRef.current = v;
+    intergalacticTrophiesDirtyRef.current = true;
+    const ok = await saveIntergalacticTrophies(v);
+    if (ok && intergalacticTrophiesRef.current === v) intergalacticTrophiesDirtyRef.current = false;
   }, []);
 
   const persistShipConfig = useCallback(async (cfg) => {
@@ -1817,7 +2703,10 @@ export default function AloneAmongTheStars() {
         });
         statsRef.current = nextStats;
         setLifetimeStats(nextStats);
-        saveStats(nextStats);
+        statsDirtyRef.current = true;
+        saveStats(nextStats).then((ok) => {
+          if (ok && statsRef.current === nextStats) statsDirtyRef.current = false;
+        });
         if (newlyUnlocked.length) {
           setAchievementToast(newlyUnlocked[0]);
           setTimeout(() => setAchievementToast(null), 3200);
@@ -1892,26 +2781,16 @@ export default function AloneAmongTheStars() {
   }, []);
 
   // Title-screen music — a looping space-arcade arpeggio + bassline,
-  // synthesized on the fly. Paused during active gameplay.
+  // synthesized on the fly and paused during active gameplay. It keeps
+  // running across menu/cutscene screens (no restart on every screen change).
   useEffect(() => {
-    if (status === "playing" || !audioReady) return;
-    const ctx = getAudioCtx();
-    if (!ctx) return;
-    const melody = [392, 440, 523.25, 659.25, 523.25, 440, 392, 349.23];
-    const bass = [196, 196, 130.81, 130.81];
-    let step = 0;
-    const stepMs = 190;
-    const id = setInterval(() => {
-      const c = getAudioCtx();
-      if (!c) return;
-      tone(c, { freq: melody[step % melody.length], duration: 0.17, type: "square", vol: 0.05 });
-      if (step % 2 === 0) {
-        tone(c, { freq: bass[(step / 2) % bass.length], duration: 0.32, type: "triangle", vol: 0.06 });
-      }
-      step++;
-    }, stepMs);
-    return () => clearInterval(id);
+    if (status === "playing" || !audioReady) {
+      stopMusic();
+      return;
+    }
+    startMusic();
   }, [status, audioReady]);
+  useEffect(() => () => stopMusic(), []);
 
   const initState = useCallback(() => {
     stateRef.current = {
@@ -1992,6 +2871,8 @@ export default function AloneAmongTheStars() {
     setDeathCause(null);
     setPaused(false);
     setFinalVictory(false);
+      setVaultVictory(false);
+    setVaultRetry(false);
     setShowShop(false);
     setBossRushSelection(null);
     setStatus("playing");
@@ -2027,6 +2908,8 @@ export default function AloneAmongTheStars() {
       setDeathCause(null);
       setPaused(false);
       setFinalVictory(false);
+      setVaultVictory(false);
+    setVaultRetry(false);
       setShowShop(false);
       setShowBossRush(false);
       setBossRushResult(null);
@@ -2036,10 +2919,120 @@ export default function AloneAmongTheStars() {
     [initState, shipConfig, settings.difficulty, settings.reduceEffects]
   );
 
+  // Free Explore — flying into a planet's icon on the solar-system screen
+  // starts a completely normal playing session in that world (full wave
+  // progression, real trophies for the 4 starter worlds, intergalactic
+  // trophies for the 5 new ones).
+  const enterWorldFromFreeExplore = useCallback(
+    (world) => {
+      if (world === "sealedVault") {
+        // the boss doesn't spawn until the cutscene finishes — see the
+        // vaultCutscene effect, which calls back into this same setup
+        vaultCutsceneRef.current.t = 0;
+        setFreeExploreWorld(world);
+        setStatus("vaultCutscene");
+        return;
+      }
+      initState();
+      stateRef.current.player.shape = shipConfig.shape;
+      stateRef.current.player.color = shipConfig.color;
+      stateRef.current.player.trail = shipConfig.trail || "none";
+      stateRef.current.player.bullet = shipConfig.bullet || "standard";
+      stateRef.current.world = world;
+      stateRef.current.difficulty = settings.difficulty;
+      stateRef.current.reduceEffects = settings.reduceEffects;
+      stateRef.current.degradeTimer =
+        DEGRADE_INTERVAL * (DIFFICULTIES[settings.difficulty] || DIFFICULTIES.normal).degradeMult;
+      setScore(0);
+      setWave(1);
+      setStatusFlags({ frozen: false, disarmed: false });
+      setBossHud(null);
+      setDeathCause(null);
+      setPaused(false);
+      setFinalVictory(false);
+      setVaultVictory(false);
+    setVaultRetry(false);
+      setBossRushSelection(null);
+      setFreeExploreWorld(world);
+      setStatus("playing");
+    },
+    [initState, shipConfig, settings.difficulty, settings.reduceEffects]
+  );
+
+  // Called once the Vault cutscene finishes (or is skipped) — this is the
+  // actual moment the fight begins.
+  const beginVaultFight = useCallback(() => {
+    initState();
+    stateRef.current.player.shape = shipConfig.shape;
+    stateRef.current.player.color = shipConfig.color;
+    stateRef.current.player.trail = shipConfig.trail || "none";
+    stateRef.current.player.bullet = shipConfig.bullet || "standard";
+    stateRef.current.world = "sealedVault";
+    stateRef.current.difficulty = settings.difficulty;
+    stateRef.current.reduceEffects = settings.reduceEffects;
+    stateRef.current.degradeTimer =
+      DEGRADE_INTERVAL * (DIFFICULTIES[settings.difficulty] || DIFFICULTIES.normal).degradeMult;
+    stateRef.current.vaultFight = true;
+    stateRef.current.bossActive = true;
+    stateRef.current.wave = 25;
+    spawnVaultBoss(stateRef.current);
+    setScore(0);
+    setWave(25);
+    setStatusFlags({ frozen: false, disarmed: false });
+    setBossHud(null);
+    setDeathCause(null);
+    setPaused(false);
+    setFinalVictory(false);
+    setVaultVictory(false);
+    setVaultRetry(true);
+    setBossRushSelection(null);
+    setStatus("playing");
+  },
+    [initState, shipConfig, settings.difficulty, settings.reduceEffects]
+  );
+
   const retryBossRush = useCallback(() => {
     if (!bossRushSelection) return;
     startBossRush(bossRushSelection.world, bossRushSelection.tier);
   }, [bossRushSelection, startBossRush]);
+
+  // "Play Again" / Space on the game-over and victory screens: restart the
+  // run you were JUST in. It used to always use the destination picked on
+  // the title screen (usually the Wormhole once the game is finished), so
+  // dying in a Free Explore world dropped you into the wrong world.
+  const playAgain = useCallback(() => {
+    const ended = stateRef.current && stateRef.current.world;
+    if (vaultRetry || ended === "sealedVault") return beginVaultFight();
+    if (status === "gameover" && bossRushSelection) return retryBossRush();
+    if (ended && ended !== selectedWorld && WORLDS[ended]) return enterWorldFromFreeExplore(ended);
+    return startGame();
+  }, [
+    vaultRetry,
+    status,
+    bossRushSelection,
+    selectedWorld,
+    beginVaultFight,
+    retryBossRush,
+    enterWorldFromFreeExplore,
+    startGame,
+  ]);
+
+  // Free Explore worlds each have their own trophy type, earned from any
+  // boss defeat (not just mega bosses) — awarded immediately, unlike
+  // normal trophies which wait for the win screen. Never spent; just
+  // accumulated as an unlock key for the next world in the sequence.
+  const awardIntergalacticTrophy = useCallback((world) => {
+    const cfg = WORLDS[world];
+    if (!cfg || !cfg.trophyType) return;
+    const type = cfg.trophyType;
+    setIntergalacticTrophies((prev) => {
+      const next = { ...prev, [type]: (prev[type] || 0) + 1 };
+      persistIntergalacticTrophies(next);
+      return next;
+    });
+    setIgTrophyToast(INTERGALACTIC_TROPHIES[type]);
+    setTimeout(() => setIgTrophyToast(null), 2200);
+  }, [persistIntergalacticTrophies]);
 
   // Merges a finished run's stats into lifetime totals, persists them,
   // snapshots a run summary for the result screen, and surfaces any
@@ -2072,11 +3065,24 @@ export default function AloneAmongTheStars() {
       lifetimeTrophies: statsRef.current.lifetimeTrophies + trophiesEarned,
       foundOrangeCombo: statsRef.current.foundOrangeCombo || !!rs.foundOrangeCombo,
       foundBlackHole: statsRef.current.foundBlackHole || !!rs.foundBlackHole,
+      nebulaReachDefeated:
+        statsRef.current.nebulaReachDefeated || (!died && s.world === "nebulaReach" && s.wave >= 25),
+      emberBeltDefeated: statsRef.current.emberBeltDefeated || (!died && s.world === "emberBelt" && s.wave >= 25),
+      ionStormDefeated: statsRef.current.ionStormDefeated || (!died && s.world === "ionStorm" && s.wave >= 25),
+      verdantDriftDefeated:
+        statsRef.current.verdantDriftDefeated || (!died && s.world === "verdantDrift" && s.wave >= 25),
+      shatteredReliquaryDefeated:
+        statsRef.current.shatteredReliquaryDefeated ||
+        (!died && s.world === "shatteredReliquary" && s.wave >= 25),
     };
+    const prevStats = statsRef.current;
     const { next, newlyUnlocked } = applyStatsUpdate(statsRef.current, patch);
     statsRef.current = next;
     setLifetimeStats(next);
-    saveStats(next);
+    statsDirtyRef.current = true;
+    saveStats(next).then((ok) => {
+      if (ok && statsRef.current === next) statsDirtyRef.current = false;
+    });
     if (newlyUnlocked.some((a) => a.id === "easter_egg_collector")) {
       setOwnedItems((prev) => {
         if (prev.shapes.includes("egg")) return prev;
@@ -2085,6 +3091,21 @@ export default function AloneAmongTheStars() {
         return nextOwned;
       });
     }
+    // grant each Free Explore world's reward the moment its "defeated"
+    // flag transitions from false to true
+    Object.entries(WORLD_BEATEN_REWARD_MAP).forEach(([statField, reward]) => {
+      const justUnlocked = next[statField] && !prevStats[statField];
+      if (justUnlocked) {
+        setOwnedItems((prev) => {
+          if (prev[reward.category].includes(reward.id)) return prev;
+          const nextOwned = { ...prev, [reward.category]: [...prev[reward.category], reward.id] };
+          persistOwnedItems(nextOwned);
+          return nextOwned;
+        });
+        setAchievementToast({ label: `Unlocked: ${reward.label}` });
+        setTimeout(() => setAchievementToast(null), 3200);
+      }
+    });
     if (newlyUnlocked.length) {
       setAchievementToast(newlyUnlocked[0]);
       setTimeout(() => setAchievementToast(null), 3200);
@@ -2112,6 +3133,8 @@ export default function AloneAmongTheStars() {
     setDeathCause(null);
     setPaused(false);
     setFinalVictory(false);
+      setVaultVictory(false);
+    setVaultRetry(false);
     setStatus("playing");
   }, [initState, savedCheckpoint, settings.difficulty, settings.reduceEffects]);
 
@@ -2124,7 +3147,7 @@ export default function AloneAmongTheStars() {
   // it shows up as "Resume" on the title screen) rather than discarding it.
   const quitToHome = useCallback(() => {
     const s = stateRef.current;
-    if (s && s.lives > 0) {
+    if (s && s.lives > 0 && !s.vaultFight) {
       const cp = buildCheckpoint(s);
       saveCheckpoint(cp);
       setSavedCheckpoint(cp);
@@ -2183,6 +3206,8 @@ export default function AloneAmongTheStars() {
     clearCheckpoint();
     setSavedCheckpoint(null);
     setFinalVictory(false);
+      setVaultVictory(false);
+    setVaultRetry(false);
     setConfirmRestart(false);
   }, [persistTrophies]);
 
@@ -2212,12 +3237,14 @@ export default function AloneAmongTheStars() {
       if (e.key === " ") {
         if (status === "cutscene") setStatus("tutorial");
         else if (status === "travel") setStatus("start");
-        else if (status === "start" || status === "gameover" || status === "won") startGame();
+        else if (status === "vaultVictory") setStatus("won");
+        else if (status === "start") startGame();
+        else if (status === "gameover" || status === "won") playAgain();
       }
       if ((e.key === "Escape" || e.key.toLowerCase() === "p") && status === "playing") {
         setPaused((v) => {
           const next = !v;
-          if (next && stateRef.current && stateRef.current.lives > 0) {
+          if (next && stateRef.current && stateRef.current.lives > 0 && !stateRef.current.vaultFight) {
             const cp = buildCheckpoint(stateRef.current);
             saveCheckpoint(cp);
             setSavedCheckpoint(cp);
@@ -2235,7 +3262,7 @@ export default function AloneAmongTheStars() {
       window.removeEventListener("keydown", down);
       window.removeEventListener("keyup", up);
     };
-  }, [status, startGame]);
+  }, [status, startGame, playAgain]);
 
   // Keep a ref in sync so the gameplay loop (which doesn't restart on
   // every pause toggle) can check pause state live.
@@ -2248,7 +3275,7 @@ export default function AloneAmongTheStars() {
   // closes the tab (unlike beforeunload, which mobile browsers often skip).
   useEffect(() => {
     const saveNow = () => {
-      if (status === "playing" && stateRef.current && stateRef.current.lives > 0) {
+      if (status === "playing" && stateRef.current && stateRef.current.lives > 0 && !stateRef.current.vaultFight) {
         saveCheckpoint(buildCheckpoint(stateRef.current));
       }
       // trophies are precious — re-flush if the original save after a win
@@ -2268,6 +3295,16 @@ export default function AloneAmongTheStars() {
       if (shipConfigDirtyRef.current) {
         saveShipConfig(shipConfigRef.current).then((ok) => {
           if (ok) shipConfigDirtyRef.current = false;
+        });
+      }
+      if (intergalacticTrophiesDirtyRef.current) {
+        saveIntergalacticTrophies(intergalacticTrophiesRef.current).then((ok) => {
+          if (ok) intergalacticTrophiesDirtyRef.current = false;
+        });
+      }
+      if (statsDirtyRef.current) {
+        saveStats(statsRef.current).then((ok) => {
+          if (ok) statsDirtyRef.current = false;
         });
       }
     };
@@ -2291,7 +3328,10 @@ export default function AloneAmongTheStars() {
       status === "cutscene" ||
       status === "travel" ||
       status === "blackhole" ||
-      status === "homecoming"
+      status === "homecoming" ||
+      status === "freeexplore" ||
+      status === "vaultCutscene" ||
+      status === "vaultVictory"
     )
       return;
     const canvas = canvasRef.current;
@@ -3761,6 +4801,713 @@ export default function AloneAmongTheStars() {
     return () => cancelAnimationFrame(raf);
   }, [status, shipConfig.color]);
 
+  // Sealed Vault VICTORY scene — plays after the Cathode Sovereign explodes,
+  // before the results screen. Five beats: the shards burst free in a flash
+  // of light, the fallen boss is named, "THE VAULT IS BROKEN", the Voidforged
+  // reward is revealed on the ship, then the shards flow back into it.
+  useEffect(() => {
+    if (status !== "vaultVictory") return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const vv = vaultVictoryRef.current;
+    vv.t = 0;
+    const CX = WIDTH / 2;
+    const SHIP_Y0 = HEIGHT * 0.66;
+    const SHIP_Y1 = HEIGHT * 0.58;
+    const T_SPLIT = 70; // shards settle into halos
+    const T_NAME = 90; // boss named
+    const T_BROKEN = 310; // "THE VAULT IS BROKEN"
+    const T_REWARD = 490; // Voidforged revealed
+    const T_RETURN = 630; // shards flow back into the ship
+    const T_END = 705;
+    vv.stars = Array.from({ length: 110 }, () => ({
+      x: rand(0, WIDTH), y: rand(0, HEIGHT), r: rand(0.5, 2), sp: rand(0.3, 1.5), ph: rand(0, 6.28),
+    }));
+    vv.shards = Array.from({ length: 25 }, (_, i) => {
+      const g = Math.floor(i / 5);
+      const ang = rand(0, Math.PI * 2);
+      const sp = rand(4, 9);
+      return {
+        g, x: CX, y: SHIP_Y0, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp,
+        ringR: 62 + g * 17, ringA: ((i % 5) / 5) * Math.PI * 2 + g * 0.7,
+        spin: (0.012 + g * 0.003) * (g % 2 ? -1 : 1),
+      };
+    });
+    sfx.vaultVictory();
+
+    const clamp01 = (v) => Math.max(0, Math.min(1, v));
+    const fade = (t, a, b, c2, d) => clamp01((t - a) / (b - a)) * (1 - clamp01((t - c2) / (d - c2)));
+    const text = (str, y, size, color, alpha, glow) => {
+      if (alpha <= 0.01) return;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.textAlign = "center";
+      ctx.font = `${size}px 'Orbitron', 'JetBrains Mono', sans-serif`;
+      ctx.fillStyle = color;
+      ctx.shadowColor = glow || color;
+      ctx.shadowBlur = 14;
+      ctx.fillText(str, CX, y);
+      ctx.restore();
+    };
+
+    let raf;
+    const draw = () => {
+      try {
+        const t = ++vv.t;
+        const shipY = SHIP_Y0 + (SHIP_Y1 - SHIP_Y0) * clamp01(t / T_BROKEN) + Math.sin(t * 0.04) * 4;
+        const voidforged = t >= T_REWARD;
+        const hull = voidforged
+          ? "#1a0022"
+          : shipConfig.color === "rainbow"
+          ? `hsl(${(t * 2) % 360},85%,62%)`
+          : shipConfig.color || COLORS.amber;
+
+        // calm deep-space backdrop with stars drifting past (the ship rises)
+        ctx.fillStyle = "#03030a";
+        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+        vv.stars.forEach((st) => {
+          st.y += st.sp * (t < T_SPLIT ? 0.4 : 1.1);
+          if (st.y > HEIGHT) st.y = 0;
+          ctx.globalAlpha = 0.35 + 0.35 * Math.sin(t * 0.05 + st.ph);
+          ctx.fillStyle = "#fff";
+          ctx.fillRect(st.x, st.y, st.r, st.r * (1 + st.sp));
+        });
+        ctx.globalAlpha = 1;
+
+        // slow god-rays + glow behind the ship
+        const rays = t < T_RETURN ? 1 : clamp01(1 - (t - T_RETURN) / (T_END - T_RETURN));
+        ctx.save();
+        ctx.globalCompositeOperation = "lighter";
+        ctx.translate(CX, shipY);
+        for (let k = 0; k < 14; k++) {
+          const a = (k / 14) * Math.PI * 2 + t * 0.004;
+          ctx.save();
+          ctx.rotate(a);
+          const g = ctx.createLinearGradient(0, 0, 0, -520);
+          const rc = voidforged ? "200,120,255" : "255,255,255";
+          g.addColorStop(0, `rgba(${rc},${0.16 * rays})`);
+          g.addColorStop(1, `rgba(${rc},0)`);
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.moveTo(-9, 0);
+          ctx.lineTo(9, 0);
+          ctx.lineTo(34, -520);
+          ctx.lineTo(-34, -520);
+          ctx.closePath();
+          ctx.fill();
+          ctx.restore();
+        }
+        const pulse = 0.85 + 0.15 * Math.sin(t * 0.1);
+        const rg = ctx.createRadialGradient(0, 0, 0, 0, 0, 170);
+        const rc2 = voidforged ? "190,110" : "255,255";
+        rg.addColorStop(0, `rgba(255,255,255,${0.9 * pulse * rays})`);
+        rg.addColorStop(0.35, `rgba(${rc2},255,${0.38 * rays})`);
+        rg.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.fillStyle = rg;
+        ctx.fillRect(-170, -170, 340, 340);
+        ctx.restore();
+
+        // the ship
+        ctx.save();
+        ctx.translate(CX, shipY);
+        drawShipSilhouette(ctx, shipConfig.shape, hull, 2.3, 1, voidforged ? "#a82cff" : "#ffffff");
+        ctx.restore();
+
+        // the 25 shards: burst out, settle into halos, then flow back in
+        vv.shards.forEach((sh, i) => {
+          const col = VAULT_SHARD_COLORS[sh.g];
+          if (t < T_SPLIT) {
+            sh.x += sh.vx;
+            sh.y += sh.vy;
+            sh.vx *= 0.94;
+            sh.vy *= 0.94;
+          } else {
+            const ang = sh.ringA + t * sh.spin * (t >= T_RETURN ? 2.5 : 1);
+            const tx = t >= T_RETURN ? CX : CX + Math.cos(ang) * sh.ringR;
+            const ty = t >= T_RETURN ? shipY : shipY + Math.sin(ang) * sh.ringR * 0.42;
+            const k = t >= T_RETURN ? 0.1 : 0.045;
+            sh.x += (tx - sh.x) * k;
+            sh.y += (ty - sh.y) * k;
+          }
+          const away = t >= T_RETURN ? clamp01(1 - (t - T_RETURN) / (T_END - T_RETURN - 8)) : 1;
+          if (away <= 0.02) return;
+          const size = 4.4 * (0.4 + 0.6 * away);
+          ctx.save();
+          ctx.globalCompositeOperation = "lighter";
+          const glow = ctx.createRadialGradient(sh.x, sh.y, 0, sh.x, sh.y, size * 3.4);
+          glow.addColorStop(0, col);
+          glow.addColorStop(1, "rgba(0,0,0,0)");
+          ctx.globalAlpha = 0.85 * away;
+          ctx.fillStyle = glow;
+          ctx.fillRect(sh.x - size * 3.4, sh.y - size * 3.4, size * 6.8, size * 6.8);
+          ctx.globalAlpha = away;
+          ctx.fillStyle = col;
+          ctx.beginPath();
+          ctx.moveTo(sh.x, sh.y - size);
+          ctx.lineTo(sh.x + size * 0.7, sh.y);
+          ctx.lineTo(sh.x, sh.y + size);
+          ctx.lineTo(sh.x - size * 0.7, sh.y);
+          ctx.closePath();
+          ctx.fill();
+          ctx.fillStyle = "#fff";
+          ctx.beginPath();
+          ctx.arc(sh.x, sh.y, size * 0.3, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        });
+
+        // shockwave rings at the big moments
+        [[0, 330], [T_BROKEN, 300], [T_REWARD, 280]].forEach(([t0, maxR]) => {
+          const d = (t - t0) / 55;
+          if (d < 0 || d > 1) return;
+          ctx.save();
+          ctx.globalCompositeOperation = "lighter";
+          ctx.globalAlpha = 1 - d;
+          ctx.strokeStyle = t0 === T_REWARD ? "#c87cff" : "#ffffff";
+          ctx.lineWidth = 3 + (1 - d) * 5;
+          ctx.beginPath();
+          ctx.arc(CX, shipY, d * maxR, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.restore();
+        });
+
+        // words
+        text("THE CATHODE SOVEREIGN", HEIGHT * 0.17, 17, "#c87cff", fade(t, T_NAME, T_NAME + 40, T_BROKEN - 25, T_BROKEN - 5));
+        text("HAS FALLEN", HEIGHT * 0.17 + 30, 22, "#ffffff", fade(t, T_NAME + 25, T_NAME + 65, T_BROKEN - 25, T_BROKEN - 5), "#ffffff");
+        text("THE VAULT IS BROKEN", HEIGHT * 0.17 + 10, 25, "#ffffff", fade(t, T_BROKEN + 8, T_BROKEN + 45, T_REWARD - 30, T_REWARD - 8), "#c87cff");
+        text("VOIDFORGED", HEIGHT * 0.17, 25, "#e0b3ff", fade(t, T_REWARD + 10, T_REWARD + 45, T_RETURN - 25, T_RETURN - 5), "#a82cff");
+        text("a new color — find it in the shop", HEIGHT * 0.17 + 28, 11, "#c9b8e8", fade(t, T_REWARD + 35, T_REWARD + 70, T_RETURN - 25, T_RETURN - 5), "#a82cff");
+        text("your shards are safe", HEIGHT * 0.17 + 6, 13, "#ffffff", fade(t, T_RETURN - 5, T_RETURN + 18, T_END - 22, T_END - 6), "#ffffff");
+
+        // opening white-out and the flash as the reward appears
+        const flash = Math.max(clamp01(1 - t / 55), t >= T_REWARD && t < T_REWARD + 24 ? 0.85 * (1 - (t - T_REWARD) / 24) : 0);
+        if (flash > 0.01) {
+          ctx.fillStyle = `rgba(255,255,255,${flash})`;
+          ctx.fillRect(0, 0, WIDTH, HEIGHT);
+        }
+        // closing fade
+        if (t > T_END - 14) {
+          ctx.fillStyle = `rgba(0,0,0,${clamp01((t - (T_END - 14)) / 14)})`;
+          ctx.fillRect(0, 0, WIDTH, HEIGHT);
+        }
+
+        if (t >= T_END) {
+          setStatus("won");
+          return;
+        }
+        raf = requestAnimationFrame(draw);
+      } catch (e) {
+        console.error("Vault victory frame error, recovering:", e);
+        raf = requestAnimationFrame(draw);
+      }
+    };
+    raf = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(raf);
+  }, [status, shipConfig.shape, shipConfig.color]);
+
+  // Sealed Vault cutscene — plays once, right before the final fight.
+  // Four beats: flying toward the ancient structure, the lock you spent
+  // every shard on actually breaking apart, a beat of total darkness, then
+  // the Cathode Sovereign's eyes opening through a wall of CRT glitch.
+  useEffect(() => {
+    if (status !== "vaultCutscene") return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const vc = vaultCutsceneRef.current;
+    vc.t = 0;
+    if (!vc.stars) {
+      vc.stars = Array.from({ length: 90 }, () => ({
+        x: rand(0, WIDTH),
+        y: rand(0, HEIGHT),
+        r: rand(0.6, 2.2),
+        phase: rand(0, Math.PI * 2),
+      }));
+    }
+    if (!vc.shards) {
+      // fragments of the lock, flung outward once it breaks
+      vc.shards = Array.from({ length: 26 }, () => ({
+        ang: rand(0, Math.PI * 2),
+        dist: rand(4, 12),
+        speed: rand(3, 9),
+        spin: rand(-0.2, 0.2),
+        len: rand(6, 18),
+      }));
+    }
+
+    const APPROACH_END = 160;
+    const BREAK_END = APPROACH_END + 170;
+    const DARK_END = BREAK_END + 90;
+    const REVEAL_END = DARK_END + 170;
+    const DURATION = REVEAL_END + 40;
+
+    let raf;
+    const draw = () => {
+      try {
+        vc.t++;
+        const t = vc.t;
+
+        ctx.fillStyle = "#000";
+        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+        if (t < APPROACH_END) {
+          // ---------- beat 1: approach ----------
+          const p = t / APPROACH_END;
+          vc.stars.forEach((st) => {
+            const speed = 1 + p * 5;
+            st.y += speed;
+            if (st.y > HEIGHT) st.y = 0;
+            ctx.globalAlpha = st.phase % 1 < 0.9 ? 0.7 : 0.3;
+            ctx.fillStyle = "#c8a8ff";
+            ctx.fillRect(st.x, st.y, 1.5, 6 + speed);
+          });
+          ctx.globalAlpha = 1;
+
+          const scale = 0.3 + p * 0.9;
+          ctx.save();
+          ctx.translate(WIDTH / 2, HEIGHT * 0.48);
+          ctx.scale(scale, scale);
+          ctx.strokeStyle = `rgba(168,44,255,${0.5 + 0.5 * p})`;
+          ctx.lineWidth = 3;
+          ctx.beginPath();
+          ctx.arc(0, 0, 70, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.strokeStyle = "rgba(255,80,80,0.6)";
+          ctx.lineWidth = 1.5;
+          ctx.setLineDash([4, 6]);
+          ctx.beginPath();
+          ctx.arc(0, 0, 90, t * 0.02, t * 0.02 + Math.PI * 1.4);
+          ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.restore();
+
+          ctx.textAlign = "center";
+          ctx.font = "11px 'JetBrains Mono', monospace";
+          ctx.fillStyle = "#c87cff";
+          ctx.globalAlpha = Math.min(1, p * 2);
+          ctx.fillText("APPROACHING THE SEALED VAULT", WIDTH / 2, HEIGHT - 60);
+          ctx.globalAlpha = 1;
+        } else if (t < BREAK_END) {
+          // ---------- beat 2: the lock shatters ----------
+          const p = (t - APPROACH_END) / (BREAK_END - APPROACH_END);
+          const shake = p > 0.5 ? rand(-4, 4) * (p - 0.5) * 2 : 0;
+          ctx.save();
+          ctx.translate(WIDTH / 2 + shake, HEIGHT * 0.48 + shake * 0.6);
+          const ringBreak = Math.min(1, p * 1.6);
+          ctx.strokeStyle = `rgba(200,120,255,${1 - p * 0.3})`;
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.arc(0, 0, 100, 0, Math.PI * 2 * (1 - ringBreak));
+          ctx.stroke();
+          if (p > 0.3) {
+            vc.shards.forEach((sh) => {
+              const d = sh.dist + (p - 0.3) * sh.speed * 40;
+              const x = Math.cos(sh.ang) * d;
+              const y = Math.sin(sh.ang) * d;
+              ctx.save();
+              ctx.translate(x, y);
+              ctx.rotate(sh.ang + sh.spin * t);
+              ctx.strokeStyle = `rgba(255,255,255,${Math.max(0, 1 - (p - 0.3) * 1.5)})`;
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.moveTo(-sh.len / 2, 0);
+              ctx.lineTo(sh.len / 2, 0);
+              ctx.stroke();
+              ctx.restore();
+            });
+          }
+          ctx.restore();
+
+          ctx.textAlign = "center";
+          ctx.font = "13px 'JetBrains Mono', monospace";
+          ctx.fillStyle = "#ff8a8a";
+          ctx.fillText(
+            p < 0.5 ? "THE SHARDS RESONATE —" : "THE LOCK GIVES WAY",
+            WIDTH / 2,
+            HEIGHT - 60
+          );
+        } else if (t < DARK_END) {
+          // ---------- beat 3: darkness ----------
+          const p = (t - BREAK_END) / (DARK_END - BREAK_END);
+          ctx.fillStyle = "#000";
+          ctx.fillRect(0, 0, WIDTH, HEIGHT);
+          if (p > 0.5) {
+            ctx.textAlign = "center";
+            ctx.font = "10px 'JetBrains Mono', monospace";
+            ctx.fillStyle = `rgba(255,255,255,${(p - 0.5) * 1.2})`;
+            ctx.fillText("...", WIDTH / 2, HEIGHT / 2);
+          }
+        } else {
+          // ---------- beat 4: the reveal, through CRT glitch ----------
+          const p = Math.min(1, (t - DARK_END) / (REVEAL_END - DARK_END));
+          ctx.fillStyle = "#000";
+          ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+          const glitchy = Math.random() > 0.82;
+          const gx = glitchy ? rand(-10, 10) : 0;
+
+          // two glowing red eyes, fading and widening in
+          const eyeAlpha = Math.min(1, p * 1.8);
+          const eyeSpread = 30 + p * 14;
+          [-1, 1].forEach((side) => {
+            ctx.save();
+            ctx.translate(WIDTH / 2 + side * eyeSpread + gx, HEIGHT * 0.46);
+            const glow = ctx.createRadialGradient(0, 0, 0, 0, 0, 26);
+            glow.addColorStop(0, `rgba(255,30,30,${eyeAlpha})`);
+            glow.addColorStop(1, "rgba(255,30,30,0)");
+            ctx.fillStyle = glow;
+            ctx.beginPath();
+            ctx.arc(0, 0, 26, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 9, 4 + p * 3, 0, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255,60,60,${eyeAlpha})`;
+            ctx.fill();
+            ctx.restore();
+          });
+
+          // scanlines + occasional tear
+          ctx.globalAlpha = 0.25;
+          for (let y = 0; y < HEIGHT; y += 3) {
+            ctx.fillStyle = y % 6 === 0 ? "#2a0a3a" : "#000";
+            ctx.fillRect(0, y, WIDTH, 1);
+          }
+          ctx.globalAlpha = 1;
+          if (glitchy) {
+            ctx.fillStyle = "rgba(200,120,255,0.15)";
+            ctx.fillRect(0, rand(0, HEIGHT), WIDTH, rand(4, 20));
+          }
+
+          if (p > 0.55) {
+            const textP = (p - 0.55) / 0.45;
+            ctx.textAlign = "center";
+            ctx.font = "16px 'Orbitron', 'JetBrains Mono', sans-serif";
+            ctx.fillStyle = `rgba(255,70,70,${Math.min(1, textP * 1.6)})`;
+            ctx.fillText("IT AWAKENS", WIDTH / 2, HEIGHT * 0.68);
+            ctx.font = "11px 'JetBrains Mono', monospace";
+            ctx.fillStyle = `rgba(200,120,255,${Math.min(1, textP * 1.6)})`;
+            ctx.fillText(VAULT_BOSS_NAME.toUpperCase(), WIDTH / 2, HEIGHT * 0.68 + 22);
+          }
+        }
+
+        if (t >= DURATION) {
+          beginVaultFight();
+          return;
+        }
+        raf = requestAnimationFrame(draw);
+      } catch (e) {
+        console.error("Vault cutscene frame error, recovering:", e);
+        raf = requestAnimationFrame(draw);
+      }
+    };
+
+    raf = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(raf);
+  }, [status, beginVaultFight]);
+
+  // Free Explore — a small solar-system screen. Fly around and shoot a
+  // planet to enter that world; locked planets (5 new worlds beyond the
+  // main game) just flash a warning instead of letting you in.
+  useEffect(() => {
+    if (status !== "freeexplore") return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    freeExploreFireRef.current = false;
+    const fe = {
+      t: 0,
+      ship: { x: WIDTH / 2, y: HEIGHT - 90, vx: 0, vy: 0 },
+      bullets: [],
+      stars: Array.from({ length: 70 }, () => ({
+        x: rand(0, WIDTH),
+        y: rand(0, HEIGHT),
+        r: rand(0.5, 1.6),
+        a: rand(0.3, 0.9),
+      })),
+      cool: 0,
+      lockFlash: null, // { world, t }
+      enterTimer: 0,
+      enterWorld: null,
+    };
+    let raf;
+
+    const draw = () => {
+      try {
+        fe.t++;
+
+        // input — same shared refs the main game uses
+        const k = keysRef.current;
+        let ax = 0,
+          ay = 0;
+        if (k["arrowleft"] || k["a"]) ax -= 1;
+        if (k["arrowright"] || k["d"]) ax += 1;
+        if (k["arrowup"] || k["w"]) ay -= 1;
+        if (k["arrowdown"] || k["s"]) ay += 1;
+        if (touchRef.current.active) {
+          const dx = touchRef.current.x - fe.ship.x;
+          const dy = touchRef.current.y - fe.ship.y;
+          const d = Math.hypot(dx, dy);
+          if (d > 4) {
+            ax = dx / d;
+            ay = dy / d;
+          }
+        }
+        const mag = Math.hypot(ax, ay) || 1;
+        const spd = PLAYER_SPEED * 0.9;
+        fe.ship.vx = (ax / mag) * spd;
+        fe.ship.vy = (ay / mag) * spd;
+        fe.ship.x = Math.min(WIDTH - 20, Math.max(20, fe.ship.x + fe.ship.vx));
+        fe.ship.y = Math.min(HEIGHT - 20, Math.max(20, fe.ship.y + fe.ship.vy));
+
+        // manual fire only — hold Space or tap the Fire button. No
+        // auto-fire here, since it used to shoot immediately on load
+        // before the player had a chance to steer away from whatever
+        // was closest (usually sniping the Outworld by accident).
+        fe.cool--;
+        const wantsFire = keysRef.current[" "] || freeExploreFireRef.current;
+        if (wantsFire && fe.cool <= 0 && !fe.enterWorld) {
+          fe.cool = 10;
+          fe.bullets.push({ x: fe.ship.x, y: fe.ship.y - 16 });
+        }
+        fe.bullets.forEach((b) => (b.y -= 9));
+        fe.bullets = fe.bullets.filter((b) => b.y > -20);
+
+        // bullets vs planets
+        const vaultReady = isVaultUnlockable(statsRef.current, intergalacticTrophiesRef.current);
+        const allPlanets = [
+          ...PLANET_LAYOUT,
+          { world: "sealedVault", x: 260, y: 340, r: 32, color: "#0a0014" },
+        ];
+        if (!fe.enterWorld) {
+          for (const p of allPlanets) {
+            const isVault = p.world === "sealedVault";
+            const unlocked = isVault
+              ? vaultReady
+              : WORLD_ORDER.includes(p.world) || isFreeExploreWorldUnlocked(p.world, intergalacticTrophiesRef.current);
+            for (const b of fe.bullets) {
+              if (b.dead) continue;
+              if (Math.hypot(b.x - p.x, b.y - p.y) < p.r) {
+                b.dead = true;
+                if (unlocked) {
+                  // (shards are NOT spent on entry — they're only consumed if
+                  // you actually beat the Vault boss, so a failed attempt is free)
+                  fe.enterWorld = p.world;
+                  fe.enterTimer = 50;
+                  sfx.megaReveal();
+                } else {
+                  fe.lockFlash = { world: p.world, t: 40 };
+                  sfx.alarm();
+                }
+              }
+            }
+          }
+          fe.bullets = fe.bullets.filter((b) => !b.dead);
+        }
+        if (fe.lockFlash) {
+          fe.lockFlash.t--;
+          if (fe.lockFlash.t <= 0) fe.lockFlash = null;
+        }
+
+        // ---------- render ----------
+        ctx.fillStyle = "#03040a";
+        ctx.fillRect(0, 0, WIDTH, HEIGHT);
+        fe.stars.forEach((st) => {
+          ctx.globalAlpha = st.a;
+          ctx.fillStyle = "#fff";
+          ctx.beginPath();
+          ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        ctx.globalAlpha = 1;
+
+        // decorative sun
+        const sunGrad = ctx.createRadialGradient(260, 340, 4, 260, 340, 90);
+        sunGrad.addColorStop(0, "rgba(255,220,160,0.35)");
+        sunGrad.addColorStop(1, "rgba(255,220,160,0)");
+        ctx.fillStyle = sunGrad;
+        ctx.beginPath();
+        ctx.arc(260, 340, 90, 0, Math.PI * 2);
+        ctx.fill();
+
+        allPlanets.forEach((p) => {
+          const isVault = p.world === "sealedVault";
+          const unlocked = isVault
+            ? vaultReady
+            : WORLD_ORDER.includes(p.world) || isFreeExploreWorldUnlocked(p.world, intergalacticTrophiesRef.current);
+          const flashing = fe.lockFlash && fe.lockFlash.world === p.world;
+          ctx.save();
+          if (flashing && fe.lockFlash.t % 10 < 5) {
+            ctx.strokeStyle = COLORS.red;
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r + 6, 0, Math.PI * 2);
+            ctx.stroke();
+          }
+          if (isVault) {
+            const pulse = 0.7 + 0.3 * Math.sin(fe.t * 0.08);
+            const glowColor = unlocked ? "168,44,255" : "120,120,130";
+            const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 1.8);
+            glow.addColorStop(0, `rgba(${glowColor},${(unlocked ? 0.35 : 0.18) * pulse})`);
+            glow.addColorStop(1, `rgba(${glowColor},0)`);
+            ctx.fillStyle = glow;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r * 1.8, 0, Math.PI * 2);
+            ctx.fill();
+
+            const grad = ctx.createRadialGradient(p.x - p.r * 0.3, p.y - p.r * 0.3, 1, p.x, p.y, p.r);
+            grad.addColorStop(0, unlocked ? "#3a0a55" : "#1a1a1e");
+            grad.addColorStop(1, "#020006");
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = grad;
+            ctx.fill();
+            ctx.strokeStyle = unlocked ? `rgba(200,120,255,${pulse})` : "rgba(255,255,255,0.35)";
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 4]);
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r + 5, fe.t * 0.02, fe.t * 0.02 + Math.PI * 1.5);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            if (!unlocked) {
+              ctx.textAlign = "center";
+              ctx.font = "16px 'JetBrains Mono', monospace";
+              ctx.fillStyle = "rgba(255,255,255,0.6)";
+              ctx.fillText("?", p.x, p.y + 6);
+            }
+
+            ctx.textAlign = "center";
+            ctx.font = "10px 'JetBrains Mono', monospace";
+            ctx.fillStyle = unlocked ? "#c87cff" : COLORS.amberDim;
+            ctx.fillText(unlocked ? "⚠ THE SEALED VAULT ⚠" : "🔒 ???", p.x, p.y - p.r - 32);
+            ctx.font = "8px 'JetBrains Mono', monospace";
+            ctx.fillStyle = COLORS.amberDim;
+            if (unlocked) {
+              const cleared = ((ownedItemsRef.current || {}).colors || []).includes("sh_voidforged");
+              ctx.fillText(cleared ? "cleared — shoot to replay" : "shoot to break the lock", p.x, p.y - p.r - 20);
+            } else {
+              const worldsDone = FREE_EXPLORE_ORDER.filter((w) =>
+                isWorldComplete(w, statsRef.current, intergalacticTrophiesRef.current)
+              ).length;
+              const shardsReady = Object.keys(DEFAULT_INTERGALACTIC_TROPHIES).filter(
+                (t) => (intergalacticTrophiesRef.current[t] || 0) >= 5
+              ).length;
+              ctx.fillText(`worlds beaten ${worldsDone}/5 · shards ${shardsReady}/5`, p.x, p.y - p.r - 20);
+            }
+            ctx.restore();
+            return;
+          }
+          const grad = ctx.createRadialGradient(p.x - p.r * 0.3, p.y - p.r * 0.3, 1, p.x, p.y, p.r);
+          grad.addColorStop(0, p.color);
+          grad.addColorStop(1, "#05060a");
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = grad;
+          ctx.globalAlpha = unlocked ? 1 : 0.45;
+          ctx.fill();
+          ctx.strokeStyle = unlocked ? p.color : "rgba(255,255,255,0.3)";
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+
+          const cfg = WORLDS[p.world];
+          const bossFlag = !!statsRef.current[`${p.world}Defeated`];
+          ctx.textAlign = "center";
+          ctx.font = "10px 'JetBrains Mono', monospace";
+          ctx.fillStyle = unlocked ? COLORS.white : COLORS.amberDim;
+          ctx.fillText(unlocked ? cfg.name : "🔒 " + cfg.name, p.x, p.y + p.r + 14);
+          if (cfg.trophyType) {
+            const meta = INTERGALACTIC_TROPHIES[cfg.trophyType];
+            const count = intergalacticTrophiesRef.current[cfg.trophyType] || 0;
+            ctx.font = "8px 'JetBrains Mono', monospace";
+            ctx.fillStyle = COLORS.amberDim;
+            ctx.fillText(`${meta.icon} ${Math.min(count, 5)}/5 shards`, p.x, p.y + p.r + 26);
+            // "defeated" is only shown once the boss is beaten AND all 5
+            // shards are collected; anything less says what is missing
+            const complete = bossFlag && count >= 5;
+            ctx.fillStyle = complete ? "#7dffb0" : "#ff8a8a";
+            ctx.fillText(
+              complete
+                ? "✓ mega boss defeated"
+                : bossFlag
+                ? "✗ needs all 5 shards"
+                : "✗ mega boss NOT defeated",
+              p.x,
+              p.y + p.r + 37
+            );
+          }
+          ctx.restore();
+        });
+
+        // player ship
+        if (!fe.enterWorld || fe.enterTimer > 20) {
+          ctx.save();
+          ctx.translate(fe.ship.x, fe.ship.y);
+          const accent = shipConfig.color === "rainbow" ? `hsl(${(fe.t * 2) % 360},85%,62%)` : shipConfig.color;
+          ctx.beginPath();
+          ctx.moveTo(0, -14);
+          ctx.lineTo(9, 10);
+          ctx.lineTo(0, 5);
+          ctx.lineTo(-9, 10);
+          ctx.closePath();
+          ctx.fillStyle = accent || COLORS.amber;
+          ctx.fill();
+          ctx.restore();
+        }
+        fe.bullets.forEach((b) => {
+          ctx.strokeStyle = COLORS.cyan;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(b.x, b.y);
+          ctx.lineTo(b.x, b.y + 8);
+          ctx.stroke();
+        });
+
+        ctx.textAlign = "center";
+        ctx.font = "11px 'JetBrains Mono', monospace";
+        ctx.fillStyle = COLORS.amberDim;
+        ctx.fillText("Fly to a world, hold SPACE or FIRE to shoot it", WIDTH / 2, 30);
+
+        // save status — makes a device that isn't remembering progress
+        // visible instead of silent
+        {
+          const bad = [saveDiag.selftest, saveDiag.shards, saveDiag.stats].some(
+            (t) => t.includes("FAILED") || t.includes("NOT SAVED") || t.includes("ERROR")
+          );
+          ctx.textAlign = "left";
+          ctx.font = "8px 'JetBrains Mono', monospace";
+          ctx.fillStyle = bad ? "#ff8a8a" : "#6b7a6b";
+          ctx.fillText(
+            `loaded: shards=${saveDiag.loadedFrom[INTERGALACTIC_KEY] || "?"}, progress=${saveDiag.loadedFrom[STATS_KEY] || "?"}`,
+            8,
+            HEIGHT - 32
+          );
+          ctx.fillText(`${saveDiag.selftest} | ${saveDiag.launchProbe}`, 8, HEIGHT - 20);
+          ctx.fillText(`last save: shards ${saveDiag.shards} | progress ${saveDiag.stats}`, 8, HEIGHT - 8);
+        }
+
+        if (fe.enterWorld) {
+          fe.enterTimer--;
+          ctx.fillStyle = `rgba(0,0,0,${1 - fe.enterTimer / 50})`;
+          ctx.fillRect(0, 0, WIDTH, HEIGHT);
+          if (fe.enterTimer <= 0) {
+            enterWorldFromFreeExplore(fe.enterWorld);
+            return;
+          }
+        }
+
+        raf = requestAnimationFrame(draw);
+      } catch (e) {
+        console.error("Free Explore frame error, recovering:", e);
+        raf = requestAnimationFrame(draw);
+      }
+    };
+
+    raf = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(raf);
+  }, [status, shipConfig.color, shipConfig.shape, enterWorldFromFreeExplore, persistIntergalacticTrophies]);
+
   // Main loop
   useEffect(() => {
     if (status !== "playing") return;
@@ -3871,8 +5618,10 @@ export default function AloneAmongTheStars() {
           setDeathCause(ds.cause);
           flushRunStats(s, { died: true });
           setStatus("gameover");
-          clearCheckpoint();
-          setSavedCheckpoint(null);
+          if (!s.vaultFight) {
+            clearCheckpoint();
+            setSavedCheckpoint(null);
+          }
           return;
         }
 
@@ -3939,7 +5688,7 @@ export default function AloneAmongTheStars() {
       s.player.cool--;
       if (s.player.cool <= 0) {
         s.player.cool = s.player.cooldown;
-        if (s.player.disarmed <= 0) {
+        if (s.player.disarmed <= 0 && !(s.vaultPower && s.vaultPower.phase !== "empowered")) {
           const n = s.player.spread;
           const spacing = 9;
           const bulletType = s.player.bullet || "standard";
@@ -3997,12 +5746,21 @@ export default function AloneAmongTheStars() {
         s.runStats.foundOrangeCombo = true;
       }
 
-      // periodic system faults — every ~15 seconds during play (scaled by difficulty)
-      s.degradeTimer--;
-      if (s.degradeTimer <= 0) {
-        rollDegrade(s);
-        s.degradeTimer = DEGRADE_INTERVAL * (DIFFICULTIES[s.difficulty] || DIFFICULTIES.normal).degradeMult;
+      // periodic system faults — every ~15 seconds during play (scaled by
+      // difficulty). Never while the victory explosion is already playing
+      // — a fault rolling Hull Breach here could cost the last life after
+      // the boss is already dead, recording a death instead of a win.
+      // (and none at all during the Vault fight — it's hard enough already)
+      if (!s.finale && !s.vaultFight) {
+        s.degradeTimer--;
+        if (s.degradeTimer <= 0) {
+          rollDegrade(s);
+          s.degradeTimer = DEGRADE_INTERVAL * (DIFFICULTIES[s.difficulty] || DIFFICULTIES.normal).degradeMult;
+        }
       }
+
+      // Vault: shard power-up scene
+      updateVaultPower(s);
 
       // bullets
       s.bullets.forEach((b) => {
@@ -4092,7 +5850,19 @@ export default function AloneAmongTheStars() {
               ? makeCometGeometry(size)
               : rockStyle === "star"
               ? makeStarGeometry(size)
+              : rockStyle === "plasma"
+              ? makePlasmaGeometry(size)
+              : rockStyle === "cloud"
+              ? makeCloudGeometry(size)
               : makeRockGeometry(size);
+          const stylePalette =
+            rockStyle === "plasma"
+              ? ION_STORM_COLORS
+              : rockStyle === "cloud"
+              ? NEBULA_CLOUD_COLORS
+              : rockStyle === "star"
+              ? WORMHOLE_STAR_COLORS
+              : null;
           s.rocks.push({
             x: rand(size, WIDTH - size),
             y: -size,
@@ -4103,11 +5873,13 @@ export default function AloneAmongTheStars() {
             spin: rand(-0.045, 0.045),
             a: rand(0, Math.PI * 2),
             style: rockStyle,
-            color: WORMHOLE_STAR_COLORS[Math.floor(rand(0, WORMHOLE_STAR_COLORS.length))],
+            color: stylePalette ? stylePalette[Math.floor(rand(0, stylePalette.length))] : undefined,
             outline: geo.outline,
             craters: geo.craters,
             facets: geo.facets,
             hotspots: geo.hotspots,
+            arcs: geo.arcs,
+            lobes: geo.lobes,
           });
           s.spawnTimer = Math.max(14, 46 - wave * 2) * ((DIFFICULTIES[s.difficulty] || DIFFICULTIES.normal).spawnMult);
         }
@@ -4124,6 +5896,36 @@ export default function AloneAmongTheStars() {
       // ---------- boss update ----------
       if (s.bossActive && s.boss) {
         const boss = s.boss;
+
+        // Sealed Vault fight: invulnerable and attacking non-stop for a
+        // full minute, then suddenly defenseless. Once exhausted, the
+        // idle-state timer below is pinned so it can never count down to
+        // zero and select another attack — the existing attack state
+        // machine doesn't need to be touched at all.
+        if (boss.vaultPhase === "enraged" && boss.state !== "entrance") {
+          // the full minute only starts once the fight actually begins —
+          // not during the entrance, when it can't even be targeted
+          boss.vaultTimer--;
+          if (boss.vaultTimer <= 0) {
+            boss.vaultPhase = "exhausted";
+            boss.hp = 40;
+            boss.maxHp = 40;
+            boss.state = "idle";
+            boss.stateTimer = 999999999;
+            // anything it already fired (bullets, bombardment zones) vanishes
+            // with it — nothing from the enraged phase can hit you now
+            s.bossBullets = [];
+            s.shakeT = 30;
+            s.alert = { text: "THE SOVEREIGN IS EXHAUSTED", t: 150, warn: true };
+            sfx.alarm();
+            // the shards gather round the ship for ~2.5s, then pour into it.
+            // The boss can't be hurt, and the ship holds fire, until then.
+            s.vaultPower = makeVaultPower();
+            boss.powerLock = true;
+            sfx.shardCharge();
+          }
+        }
+
         const enraged = boss.tier === "mega" && boss.hp < boss.maxHp * 0.4;
         const factor = boss.speedFactor * (enraged ? 0.72 : 1);
         const scaled = (frames) => Math.max(6, Math.round(frames * factor));
@@ -4142,7 +5944,12 @@ export default function AloneAmongTheStars() {
             if (boss.tier === "mega") sfx.megaReveal();
           }
         } else if (boss.state === "idle") {
-          boss.x = WIDTH / 2 + Math.sin(s.t * (boss.tier === "mega" ? 0.024 : 0.018)) * 150;
+          if (boss.vaultPhase === "exhausted") {
+            // barely moving, heaving in place — no attacks left in it
+            boss.x = WIDTH / 2 + Math.sin(s.t * 0.015) * 30;
+          } else {
+            boss.x = WIDTH / 2 + Math.sin(s.t * (boss.tier === "mega" ? 0.024 : 0.018)) * 150;
+          }
           boss.stateTimer--;
           if (boss.stateTimer <= 0) {
             boss.moveCursor = (boss.moveCursor + 1) % boss.moves.length;
@@ -4329,6 +6136,22 @@ export default function AloneAmongTheStars() {
             const d = Math.hypot(boss.x - b.x, boss.y - b.y);
             const hitRadius = boss.tier === "mega" && boss.world === "wormhole" ? 60 : 34;
             if (d < hitRadius) {
+              if (boss.vaultPhase === "enraged" || boss.powerLock) {
+                // genuinely invulnerable — bullets bounce off with a spark
+                if (b.pierce) b.hitBoss = true;
+                else b.dead = true;
+                for (let i = 0; i < 2; i++) {
+                  s.particles.push({
+                    x: b.x,
+                    y: b.y,
+                    vx: rand(-1, 1),
+                    vy: rand(-1, 1),
+                    life: 8,
+                    c: "#9a9aa0",
+                  });
+                }
+                continue;
+              }
               if (b.pierce) b.hitBoss = true;
               else b.dead = true;
               boss.hp -= bulletDamage(s, b);
@@ -4366,6 +6189,9 @@ export default function AloneAmongTheStars() {
                 if (!s.bossRush) {
                   s.runStats.bossesBeaten++;
                   if (!s.runStats.tookDamageThisBoss) s.runStats.flawlessBossWins++;
+                  if (WORLDS[boss.world] && WORLDS[boss.world].trophyType) {
+                    awardIntergalacticTrophy(boss.world);
+                  }
                 }
                 if (s.bossRush) {
                   // any boss defeat during Boss Rush ends the session —
@@ -4380,21 +6206,30 @@ export default function AloneAmongTheStars() {
                     bossRush: true,
                   };
                   s.rocks = [];
+                  s.bossBullets = [];
+                  s.bossActive = false;
                   s.shakeT = 28;
                   sfx.explosion(boss.tier === "mega");
                 } else if (boss.tier === "mega") {
                   // hand off to the explosion / win sequence instead of
                   // clearing immediately — no more asteroids from here on
                   const isMothershipKill = boss.world === "wormhole";
+                  const isVaultKill = boss.world === "sealedVault";
                   s.finale = {
                     x: boss.x,
                     y: boss.y,
-                    timer: isMothershipKill ? 200 : 160,
-                    total: isMothershipKill ? 200 : 160,
+                    timer: isVaultKill ? 220 : isMothershipKill ? 200 : 160,
+                    total: isVaultKill ? 220 : isMothershipKill ? 200 : 160,
                     tier: "mega",
                     world: boss.world,
+                    vaultKill: isVaultKill,
                   };
                   s.rocks = [];
+                  // the boss is already defeated — nothing it already fired
+                  // should be able to kill the player during the victory
+                  // explosion, and it must not keep attacking either
+                  s.bossBullets = [];
+                  s.bossActive = false;
                   s.shakeT = 30;
                   sfx.explosion(true);
                 } else {
@@ -4588,7 +6423,7 @@ export default function AloneAmongTheStars() {
       // periodic fallback checkpoint save, in case visibility/pagehide
       // events don't fire (some mobile browsers are inconsistent)
       if (s.t % 1200 === 0 && s.lives > 0) {
-        saveCheckpoint(buildCheckpoint(s));
+        if (!s.vaultFight) saveCheckpoint(buildCheckpoint(s));
         if (trophiesDirtyRef.current) {
           saveTrophies(trophiesRef.current).then((ok) => {
             if (ok) trophiesDirtyRef.current = false;
@@ -4602,6 +6437,16 @@ export default function AloneAmongTheStars() {
         if (shipConfigDirtyRef.current) {
           saveShipConfig(shipConfigRef.current).then((ok) => {
             if (ok) shipConfigDirtyRef.current = false;
+          });
+        }
+        if (intergalacticTrophiesDirtyRef.current) {
+          saveIntergalacticTrophies(intergalacticTrophiesRef.current).then((ok) => {
+            if (ok) intergalacticTrophiesDirtyRef.current = false;
+          });
+        }
+        if (statsDirtyRef.current) {
+          saveStats(statsRef.current).then((ok) => {
+            if (ok) statsDirtyRef.current = false;
           });
         }
       }
@@ -4675,6 +6520,7 @@ export default function AloneAmongTheStars() {
         if (s.finale.bossRush) {
           setBest((b) => { const next = Math.max(b, s.score); if (next !== b) saveBestScore(next); return next; });
           setBossRushResult("win");
+          setShowBossRush(true); // reopen the panel so the "Boss defeated" message is actually seen
           flushRunStats(s, { died: false });
           setStatus("start");
           return;
@@ -4684,13 +6530,32 @@ export default function AloneAmongTheStars() {
         setTrophies(nextTrophies);
         persistTrophies(nextTrophies);
         flushRunStats(s, { died: false, trophiesEarned: 1 });
-        clearCheckpoint();
-        setSavedCheckpoint(null);
+        // a Vault win says nothing about the player's other saved run, so
+        // it must not wipe the Resume slot (normal wins still clear it)
+        if (!s.finale.vaultKill) {
+          clearCheckpoint();
+          setSavedCheckpoint(null);
+        }
+        if (s.finale.vaultKill) {
+          setVaultVictory(true);
+          // NOTE: shards, boss wins and everything else are left exactly as
+          // they were — beating the Vault never costs any progress
+          setOwnedItems((prev) => {
+            if (prev.colors.includes("sh_voidforged")) return prev;
+            const nextOwned = { ...prev, colors: [...prev.colors, "sh_voidforged"] };
+            persistOwnedItems(nextOwned);
+            return nextOwned;
+          });
+          setAchievementToast({ label: "Unlocked: Voidforged" });
+          setTimeout(() => setAchievementToast(null), 3200);
+        }
         if (s.finale.world === "wormhole") {
           setFinalVictory(true);
           setCompletedGame(true);
           saveCompletedGame(true);
           setStatus("homecoming");
+        } else if (s.finale.vaultKill) {
+          setStatus("vaultVictory");
         } else {
           setStatus("won");
         }
@@ -4705,25 +6570,13 @@ export default function AloneAmongTheStars() {
       const isWormholeWorld = s.world === "wormhole";
 
       ctx.save();
-      ctx.fillStyle = isWormholeWorld
-        ? "#020e08"
-        : isOutworldWorld
-        ? "#0a0316"
-        : isFrontierWorld
-        ? "#020611"
-        : COLORS.bg;
+      ctx.fillStyle = WORLD_BG_COLOR[s.world] || COLORS.bg;
       ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
-      // nebula clouds — dark green in the Wormhole, purple in the
-      // Outworld, icy/violet in the Frontier, warm default on Homeworld
+      // nebula clouds — each world beyond Homeworld gets its own palette
       s.nebulae.forEach((n, i) => {
-        const palette = isWormholeWorld
-          ? WORMHOLE_NEBULA_COLORS[i % WORMHOLE_NEBULA_COLORS.length]
-          : isOutworldWorld
-          ? OUTWORLD_NEBULA_COLORS[i % OUTWORLD_NEBULA_COLORS.length]
-          : isFrontierWorld
-          ? FRONTIER_NEBULA_COLORS[i % FRONTIER_NEBULA_COLORS.length]
-          : n;
+        const paletteSet = WORLD_NEBULA_COLORS[s.world];
+        const palette = paletteSet ? paletteSet[i % paletteSet.length] : n;
         const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
         g.addColorStop(0, palette.c1);
         g.addColorStop(1, palette.c2);
@@ -4800,13 +6653,7 @@ export default function AloneAmongTheStars() {
       s.stars.forEach((st) => {
         const twinkle = 0.5 + 0.5 * Math.sin(s.t * 0.04 + st.phase);
         ctx.globalAlpha = st.baseAlpha * (0.5 + 0.5 * twinkle);
-        ctx.fillStyle = isWormholeWorld
-          ? "#c8ffe0"
-          : isOutworldWorld
-          ? "#e6d0ff"
-          : isFrontierWorld
-          ? "#dff6ff"
-          : COLORS.white;
+        ctx.fillStyle = WORLD_STAR_TINT[s.world] || COLORS.white;
         ctx.beginPath();
         ctx.arc(st.x, st.y, st.r, 0, Math.PI * 2);
         ctx.fill();
@@ -4966,6 +6813,73 @@ export default function AloneAmongTheStars() {
           ctx.arc(0, 0, r.size * 0.22, 0, Math.PI * 2);
           ctx.fillStyle = "#fff";
           ctx.fill();
+        } else if (r.style === "plasma") {
+          ctx.rotate(r.a);
+          const color = r.color || "#f5f000";
+          const flicker = Math.random() > 0.85 ? 1.4 : 0.85 + 0.15 * Math.sin(s.t * 0.5 + r.x);
+
+          ctx.beginPath();
+          r.outline.forEach((pt, i) => {
+            const px = Math.cos(pt.ang) * pt.r;
+            const py = Math.sin(pt.ang) * pt.r;
+            if (i === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          });
+          ctx.closePath();
+          ctx.fillStyle = "#1a1a05";
+          ctx.fill();
+          ctx.strokeStyle = color;
+          ctx.lineWidth = danger ? 2.2 : 1.6;
+          ctx.globalAlpha = Math.min(1, flicker);
+          ctx.shadowColor = color;
+          ctx.shadowBlur = danger ? 14 : 9;
+          ctx.stroke();
+          ctx.shadowBlur = 0;
+
+          // crackling arcs branching off the shard
+          (r.arcs || []).forEach((arc) => {
+            ctx.beginPath();
+            ctx.moveTo(arc.x1, arc.y1);
+            ctx.quadraticCurveTo(arc.mx, arc.my, arc.x2, arc.y2);
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 1;
+            ctx.globalAlpha = Math.random() > 0.5 ? 0.9 : 0.2;
+            ctx.stroke();
+          });
+          ctx.globalAlpha = 1;
+        } else if (r.style === "cloud") {
+          const color = r.color || "#c65bff";
+          const drift = Math.sin(s.t * 0.02 + r.x) * 2;
+
+          // soft translucent lobes — a gas cloud, not a hard-edged rock
+          (r.lobes || []).forEach((lobe) => {
+            const grad = ctx.createRadialGradient(
+              lobe.x + drift,
+              lobe.y,
+              0,
+              lobe.x + drift,
+              lobe.y,
+              lobe.r
+            );
+            grad.addColorStop(0, color + "66");
+            grad.addColorStop(1, color + "00");
+            ctx.fillStyle = grad;
+            ctx.beginPath();
+            ctx.arc(lobe.x + drift, lobe.y, lobe.r, 0, Math.PI * 2);
+            ctx.fill();
+          });
+          // a faint core so it still reads as a distinct object to dodge
+          ctx.beginPath();
+          ctx.arc(drift * 0.4, 0, r.size * 0.35, 0, Math.PI * 2);
+          ctx.fillStyle = danger ? "rgba(255,255,255,0.55)" : color + "40";
+          ctx.fill();
+          if (danger) {
+            ctx.strokeStyle = "rgba(255,255,255,0.5)";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(drift * 0.4, 0, r.size * 0.9, 0, Math.PI * 2);
+            ctx.stroke();
+          }
         } else {
           ctx.rotate(r.a);
           const grad = ctx.createRadialGradient(
@@ -5013,46 +6927,24 @@ export default function AloneAmongTheStars() {
       if (s.bossActive && s.boss) {
         const boss = s.boss;
         const isMega = boss.tier === "mega";
-        const isFrontier = boss.world === "frontier";
-        const isOutworld = boss.world === "outworld";
         const isWormholeBoss = boss.world === "wormhole";
         const isMothership = isMega && isWormholeBoss;
-        const primary = isWormholeBoss
-          ? isMega
-            ? "#0d5c3a"
-            : "#1a8a4a"
-          : isOutworld
-          ? isMega
-            ? "#c026ff"
-            : "#9333ea"
-          : isFrontier
-          ? isMega
-            ? "#8b5bff"
-            : "#2fb8ff"
-          : isMega
-          ? COLORS.violet
-          : COLORS.red;
-        const accent = isWormholeBoss
-          ? isMega
-            ? "#baffd9"
-            : "#7dffb0"
-          : isOutworld
-          ? isMega
-            ? "#f3d9ff"
-            : "#e0b3ff"
-          : isFrontier
-          ? isMega
-            ? "#e8fbff"
-            : "#bff3ff"
-          : isMega
-          ? COLORS.cyan
-          : COLORS.amber;
+        const bossPalette = WORLD_BOSS_COLORS[boss.world] || WORLD_BOSS_COLORS.homeworld;
+        const primary = isMega ? bossPalette.megaPrimary : bossPalette.primary;
+        const accent = isMega ? bossPalette.megaAccent : bossPalette.accent;
         const isEntrance = boss.state === "entrance";
         const revealProgress = isEntrance ? boss.revealAlpha ?? 0 : 1;
         const revealFlicker = isMega && isEntrance ? 0.5 + 0.5 * Math.abs(Math.sin(s.t * 0.85)) : 1;
         const reveal = revealProgress * revealFlicker;
         const baseScale = isMothership ? 2.3 : isMega ? 1.4 : 1;
-        const scale = baseScale * (isMega && isEntrance ? 0.65 + 0.35 * revealProgress : 1);
+        const vaultScale =
+          boss.vaultPhase === "enraged"
+            ? 2.6
+            : boss.vaultPhase === "exhausted"
+            ? 1.9 + Math.sin(s.t * 0.12) * 0.15 // heaving, gasping for breath
+            : 1;
+        const scale =
+          baseScale * vaultScale * (isMega && isEntrance ? 0.65 + 0.35 * revealProgress : 1);
 
         // laser telegraph / beam
         if (boss.moveType === "laser" && (boss.state === "telegraph" || boss.state === "firing")) {
@@ -5191,11 +7083,25 @@ export default function AloneAmongTheStars() {
         ctx.save();
         ctx.globalAlpha = reveal;
         ctx.textAlign = "center";
-        ctx.fillStyle = isMothership ? "#1fa85a" : isMega ? COLORS.violetDim : COLORS.redDim;
+        ctx.fillStyle = boss.vaultPhase
+          ? boss.vaultPhase === "enraged"
+            ? "#ff2b2b"
+            : "#c87cff"
+          : isMothership
+          ? "#1fa85a"
+          : isMega
+          ? COLORS.violetDim
+          : COLORS.redDim;
         ctx.font = "10px 'JetBrains Mono', 'Courier New', monospace";
         ctx.fillText(
           isMega && isEntrance
             ? "SCANNING..."
+            : boss.vaultPhase === "enraged"
+            ? "INVULNERABLE"
+            : boss.vaultPhase === "exhausted"
+            ? boss.powerLock
+              ? "THE SHARDS ANSWER..."
+              : "EXHAUSTED — FINISH IT"
             : isMothership
             ? "MOTHERSHIP"
             : isMega
@@ -5204,10 +7110,26 @@ export default function AloneAmongTheStars() {
           WIDTH / 2,
           26
         );
+        if (boss.vaultPhase === "enraged" && !isEntrance) {
+          const secsLeft = Math.ceil(boss.vaultTimer / 60);
+          ctx.font = "9px 'JetBrains Mono', 'Courier New', monospace";
+          ctx.fillStyle = "#ffb0b0";
+          ctx.fillText(`Survive ${secsLeft}s until it tires out`, WIDTH / 2, 44);
+        }
         ctx.strokeStyle = COLORS.amberDim;
         ctx.lineWidth = 1;
         ctx.strokeRect(WIDTH / 2 - barW / 2, 32, barW, 8);
-        ctx.fillStyle = isMothership ? "#7dffb0" : isMega ? COLORS.violet : pct > 0.3 ? COLORS.red : COLORS.amber;
+        ctx.fillStyle = boss.vaultPhase
+          ? boss.vaultPhase === "enraged"
+            ? "#ff2b2b"
+            : "#c87cff"
+          : isMothership
+          ? "#7dffb0"
+          : isMega
+          ? COLORS.violet
+          : pct > 0.3
+          ? COLORS.red
+          : COLORS.amber;
         ctx.fillRect(WIDTH / 2 - barW / 2, 32, barW * pct, 8);
         ctx.restore();
       }
@@ -5275,6 +7197,10 @@ export default function AloneAmongTheStars() {
       // equipped bullet type (or per special boss-move for the
       // transformed Quantum Fighter)
       s.bullets.forEach((b) => {
+        if (s.vaultPower && s.vaultPower.phase === "empowered") {
+          drawBrightBolt(ctx, b);
+          return;
+        }
         if (b.special) {
           const vx = b.vx !== undefined ? b.vx : 0;
           const vy = b.vy !== undefined ? b.vy : -(b.speed || BULLET_SPEED);
@@ -5305,14 +7231,18 @@ export default function AloneAmongTheStars() {
         drawLaserBolt(ctx, b.x, b.y, b.vxOverride || 0, -1, len, width, color, color);
 
         if (
-          (b.type === "bl_fire" || b.type === "bl_star" || b.type === "bl_toxic" || b.type === "bl_plasma") &&
+          (b.type === "bl_fire" ||
+            b.type === "bl_star" ||
+            b.type === "bl_toxic" ||
+            b.type === "bl_plasma" ||
+            b.type === "bl_cinder") &&
           s.t % 3 === 0
         ) {
           s.particles.push({
             x: b.x + rand(-2, 2),
             y: b.y + 8,
             vx: rand(-0.4, 0.4),
-            vy: rand(0.5, 1.2),
+            vy: b.type === "bl_cinder" ? rand(-1.4, -0.6) : rand(0.5, 1.2),
             life: 14,
             c: b.type === "bl_star" ? WORMHOLE_STAR_COLORS[Math.floor(rand(0, WORMHOLE_STAR_COLORS.length))] : color,
           });
@@ -5329,6 +7259,9 @@ export default function AloneAmongTheStars() {
           ctx.restore();
         }
       });
+
+      // Vault: the white light blazing around the ship (behind the hull)
+      if (s.vaultPower && !s.deathSequence) drawVaultPowerBack(ctx, s);
 
       // player — a small detailed fighter craft: metallic fuselage,
       // swept wings, cockpit canopy, wingtip nav lights, twin engines
@@ -5530,6 +7463,9 @@ export default function AloneAmongTheStars() {
         }
       }
 
+      // Vault: orbiting shards, bright hull rim and the power-up flash
+      if (s.vaultPower && !s.deathSequence) drawVaultPowerFront(ctx, s);
+
       // power-up banner
       if (s.banner) {
         const fadeIn = Math.min(1, (130 - s.banner.t) / 14);
@@ -5637,7 +7573,7 @@ export default function AloneAmongTheStars() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         fontFamily: "'JetBrains Mono', 'Courier New', monospace",
         gap: 12,
       }}
@@ -5774,10 +7710,56 @@ export default function AloneAmongTheStars() {
           </div>
         </div>
       )}
+
+      {igTrophyToast && (
+        <div
+          className="vr-achievement-toast"
+          style={{
+            position: "fixed",
+            top: 16,
+            left: "50%",
+            transform: "translateX(-50%)",
+            zIndex: 1000,
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            padding: "10px 18px",
+            background: "rgba(6,16,10,0.95)",
+            border: `1px solid #1fa85a`,
+            boxShadow: `0 0 18px rgba(31,168,90,0.4)`,
+            pointerEvents: "none",
+          }}
+        >
+          <span style={{ fontSize: 22 }}>{igTrophyToast.icon}</span>
+          <div style={{ textAlign: "left" }}>
+            <div
+              style={{
+                fontSize: 9,
+                letterSpacing: 2,
+                textTransform: "uppercase",
+                color: "#1fa85a",
+              }}
+            >
+              Intergalactic Trophy
+            </div>
+            <div
+              style={{
+                fontFamily: "'Orbitron', 'JetBrains Mono', sans-serif",
+                fontSize: 13,
+                letterSpacing: 1,
+                color: "#7dffb0",
+              }}
+            >
+              +1 {igTrophyToast.label}
+            </div>
+          </div>
+        </div>
+      )}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
-        html, body { overscroll-behavior: none; -webkit-text-size-adjust: 100%; }
+        html, body { margin: 0; padding: 0; overscroll-behavior: none; -webkit-text-size-adjust: 100%; }
         .vr-root {
+          box-sizing: border-box;
           min-height: 100vh;
           min-height: 100dvh;
           overscroll-behavior: none;
@@ -5842,7 +7824,10 @@ export default function AloneAmongTheStars() {
       {status !== "cutscene" &&
         status !== "travel" &&
         status !== "blackhole" &&
-        status !== "homecoming" && (
+        status !== "homecoming" &&
+        status !== "freeexplore" &&
+        status !== "vaultCutscene" &&
+        status !== "vaultVictory" && (
         <div
           style={{
             display: "flex",
@@ -5872,7 +7857,7 @@ export default function AloneAmongTheStars() {
           <button
             onClick={() => {
               setPaused(true);
-              if (stateRef.current && stateRef.current.lives > 0) {
+              if (stateRef.current && stateRef.current.lives > 0 && !stateRef.current.vaultFight) {
                 const cp = buildCheckpoint(stateRef.current);
                 saveCheckpoint(cp);
                 setSavedCheckpoint(cp);
@@ -5897,6 +7882,106 @@ export default function AloneAmongTheStars() {
           </button>
         )}
       </div>
+      )}
+
+      {status === "vaultCutscene" && (
+        <div style={{ display: "flex", justifyContent: "flex-end", width: WIDTH, maxWidth: "100%" }}>
+          <button
+            onClick={beginVaultFight}
+            style={{
+              padding: "6px 14px",
+              background: "rgba(5,6,10,0.55)",
+              border: `1px solid ${COLORS.violetDim}`,
+              color: "#c87cff",
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 11,
+              letterSpacing: 2,
+              textTransform: "uppercase",
+              cursor: "pointer",
+            }}
+          >
+            Skip ▶
+          </button>
+        </div>
+      )}
+
+      {status === "vaultVictory" && (
+        <div style={{ display: "flex", justifyContent: "flex-end", width: WIDTH, maxWidth: "100%" }}>
+          <button
+            onClick={() => setStatus("won")}
+            style={{
+              padding: "6px 14px",
+              background: "rgba(5,6,10,0.55)",
+              border: `1px solid ${COLORS.violetDim}`,
+              color: "#c87cff",
+              fontFamily: "'JetBrains Mono', monospace",
+              fontSize: 11,
+              letterSpacing: 2,
+              textTransform: "uppercase",
+              cursor: "pointer",
+            }}
+          >
+            Skip ▶
+          </button>
+        </div>
+      )}
+
+      {status === "freeexplore" && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: WIDTH,
+            maxWidth: "100%",
+          }}
+        >
+          <button
+            onClick={() => setStatus("start")}
+            style={{
+              background: "transparent",
+              border: `1px solid ${COLORS.amberFaint}`,
+              color: COLORS.amber,
+              fontFamily: "inherit",
+              fontSize: 11,
+              letterSpacing: 1,
+              textTransform: "uppercase",
+              padding: "8px 14px",
+              cursor: "pointer",
+            }}
+          >
+            ← Back to Home
+          </button>
+          <button
+            onPointerDown={() => {
+              freeExploreFireRef.current = true;
+            }}
+            onPointerUp={() => {
+              freeExploreFireRef.current = false;
+            }}
+            onPointerLeave={() => {
+              freeExploreFireRef.current = false;
+            }}
+            style={{
+              background: COLORS.cyan,
+              border: `1px solid ${COLORS.cyan}`,
+              color: "#0a0a0a",
+              fontFamily: "inherit",
+              fontSize: 12,
+              fontWeight: 700,
+              letterSpacing: 1,
+              textTransform: "uppercase",
+              padding: "10px 22px",
+              minHeight: 40,
+              cursor: "pointer",
+              touchAction: "none",
+              WebkitUserSelect: "none",
+              userSelect: "none",
+            }}
+          >
+            🔫 Fire
+          </button>
+        </div>
       )}
 
       {status === "playing" && (statusFlags.frozen || statusFlags.disarmed || statusFlags.slowed || bossHud) && (
@@ -5996,11 +8081,22 @@ export default function AloneAmongTheStars() {
       )}
 
       <div
+        ref={gameBoxOuterRef}
+        style={{
+          flex: "1 1 auto",
+          minHeight: 0,
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+      <div
         style={{
           position: "relative",
-          width: "100%",
-          maxWidth: WIDTH,
-          aspectRatio: `${WIDTH} / ${HEIGHT}`,
+          width: gameBoxSize.w,
+          height: gameBoxSize.h,
           boxShadow: `0 0 0 1px ${COLORS.amberDim}, 0 0 50px rgba(255,180,84,0.07)`,
         }}
       >
@@ -6249,7 +8345,10 @@ export default function AloneAmongTheStars() {
           status !== "cutscene" &&
           status !== "travel" &&
           status !== "blackhole" &&
-          status !== "homecoming" && (
+          status !== "homecoming" &&
+          status !== "freeexplore" &&
+          status !== "vaultCutscene" &&
+          status !== "vaultVictory" && (
           <div
             style={{
               position: "absolute",
@@ -6393,15 +8492,27 @@ export default function AloneAmongTheStars() {
                     fontSize: 30,
                     fontWeight: 800,
                     letterSpacing: 3,
-                    color: finalVictory ? "#7dffb0" : COLORS.green,
-                    textShadow: `0 0 18px ${finalVictory ? "#7dffb0" : COLORS.green}`,
+                    color: vaultVictory ? "#c87cff" : finalVictory ? "#7dffb0" : COLORS.green,
+                    textShadow: `0 0 18px ${vaultVictory ? "#c87cff" : finalVictory ? "#7dffb0" : COLORS.green}`,
                   }}
                 >
-                  {finalVictory ? "MISSION ACCOMPLISHED" : "LEVEL BEATEN"}
+                  {vaultVictory ? "THE VAULT IS BROKEN" : finalVictory ? "MISSION ACCOMPLISHED" : "LEVEL BEATEN"}
                 </div>
                 <div style={{ color: COLORS.cyan, fontSize: 13, letterSpacing: 2 }}>
-                  {finalVictory ? "THE MOTHERSHIP HAS FALLEN" : "MEGA THREAT NEUTRALIZED"} — SCORE {score}
+                  {vaultVictory
+                    ? "THE CATHODE SOVEREIGN HAS FALLEN"
+                    : finalVictory
+                    ? "THE MOTHERSHIP HAS FALLEN"
+                    : "MEGA THREAT NEUTRALIZED"}{" "}
+                  — SCORE {score}
                 </div>
+                {vaultVictory && (
+                  <div style={{ color: "#c87cff", fontSize: 11, letterSpacing: 1, maxWidth: 300 }}>
+                    You outlasted it. The Voidforged color is yours — and all your progress is untouched.
+                    <br />
+                    Your shards are all still yours.
+                  </div>
+                )}
                 {finalVictory && (
                   <div style={{ color: "#7dffb0", fontSize: 11, letterSpacing: 1, maxWidth: 300 }}>
                     All worlds are now open — travel freely between them from the title screen.
@@ -6570,9 +8681,7 @@ export default function AloneAmongTheStars() {
                     gap: 8,
                     width: "100%",
                     maxWidth: 320,
-                    maxHeight: 320,
                     flexShrink: 0,
-                    overflowY: "auto",
                     padding: "4px 2px",
                   }}
                 >
@@ -6664,6 +8773,7 @@ export default function AloneAmongTheStars() {
                       const owned = ownedItems.colors.includes(item.id);
                       const equipped = shipConfig.color === item.hex;
                       const affordable = trophies >= item.cost;
+                      const locked = item.secret && !owned;
                       return (
                         <div
                           key={item.id}
@@ -6674,45 +8784,79 @@ export default function AloneAmongTheStars() {
                             gap: 10,
                             padding: "8px 12px",
                             background: COLORS.panel,
-                            border: `1px solid ${item.isRainbow ? "#e0b3ff" : COLORS.amberFaint}`,
+                            border: `1px solid ${
+                              item.secret ? "#e0b3ff" : item.isRainbow ? "#e0b3ff" : COLORS.amberFaint
+                            }`,
                           }}
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                            <div
-                              style={{
-                                width: 22,
-                                height: 22,
-                                borderRadius: "50%",
-                                background: item.isRainbow
-                                  ? "conic-gradient(red, orange, yellow, green, blue, indigo, violet, red)"
-                                  : item.hex,
-                                border: "1px solid rgba(255,255,255,0.3)",
-                              }}
-                            />
+                            {locked ? (
+                              <div
+                                style={{
+                                  width: 22,
+                                  height: 22,
+                                  borderRadius: "50%",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  fontSize: 12,
+                                  color: COLORS.amberDim,
+                                  border: "1px solid rgba(255,255,255,0.3)",
+                                }}
+                              >
+                                ?
+                              </div>
+                            ) : (
+                              <div
+                                style={{
+                                  width: 22,
+                                  height: 22,
+                                  borderRadius: "50%",
+                                  background: item.isRainbow
+                                    ? "conic-gradient(red, orange, yellow, green, blue, indigo, violet, red)"
+                                    : item.hex,
+                                  border: "1px solid rgba(255,255,255,0.3)",
+                                }}
+                              />
+                            )}
                             <div style={{ textAlign: "left" }}>
-                              <div style={{ fontSize: 12, letterSpacing: 1, color: COLORS.white }}>{item.label}</div>
+                              <div
+                                style={{
+                                  fontSize: 12,
+                                  letterSpacing: 1,
+                                  color: item.secret ? "#e0b3ff" : COLORS.white,
+                                }}
+                              >
+                                {locked ? "???" : item.label}
+                              </div>
                               <div style={{ fontSize: 9, color: COLORS.amberDim }}>
-                                {owned ? (equipped ? "Equipped" : "Owned") : `${item.cost} 🏆`}
+                                {locked
+                                  ? "🔒 Hidden reward"
+                                  : owned
+                                  ? equipped
+                                    ? "Equipped"
+                                    : "Owned"
+                                  : `${item.cost} 🏆`}
                               </div>
                             </div>
                           </div>
                           <button
-                            onClick={() => purchaseItem("colors", item)}
-                            disabled={!owned && !affordable}
+                            onClick={() => !locked && purchaseItem("colors", item)}
+                            disabled={locked || (!owned && !affordable)}
                             style={{
                               padding: "5px 12px",
                               fontFamily: "inherit",
                               fontSize: 10,
                               letterSpacing: 1,
                               textTransform: "uppercase",
-                              cursor: !owned && !affordable ? "not-allowed" : "pointer",
-                              opacity: !owned && !affordable ? 0.4 : 1,
+                              cursor: locked || (!owned && !affordable) ? "not-allowed" : "pointer",
+                              opacity: locked || (!owned && !affordable) ? 0.4 : 1,
                               background: equipped ? COLORS.amber : "transparent",
                               color: equipped ? "#0a0a0a" : COLORS.amber,
                               border: `1px solid ${COLORS.amber}`,
                             }}
                           >
-                            {equipped ? "Equipped" : owned ? "Equip" : "Buy"}
+                            {locked ? "Locked" : equipped ? "Equipped" : owned ? "Equip" : "Buy"}
                           </button>
                         </div>
                       );
@@ -6723,6 +8867,7 @@ export default function AloneAmongTheStars() {
                       const owned = ownedItems.trails.includes(item.id);
                       const equipped = shipConfig.trail === item.id;
                       const affordable = trophies >= item.cost;
+                      const locked = item.secret && !owned;
                       return (
                         <div
                           key={item.id}
@@ -6733,42 +8878,56 @@ export default function AloneAmongTheStars() {
                             gap: 10,
                             padding: "8px 12px",
                             background: COLORS.panel,
-                            border: `1px solid ${COLORS.amberFaint}`,
+                            border: `1px solid ${item.secret ? "#e0b3ff" : COLORS.amberFaint}`,
                           }}
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                            <div
-                              style={{
-                                width: 22,
-                                height: 8,
-                                borderRadius: 4,
-                                background: `linear-gradient(90deg, ${item.hex}, transparent)`,
-                              }}
-                            />
+                            {locked ? (
+                              <div style={{ width: 22, height: 8, borderRadius: 4, textAlign: "center", fontSize: 9, color: COLORS.amberDim }}>
+                                ?
+                              </div>
+                            ) : (
+                              <div
+                                style={{
+                                  width: 22,
+                                  height: 8,
+                                  borderRadius: 4,
+                                  background: `linear-gradient(90deg, ${item.hex}, transparent)`,
+                                }}
+                              />
+                            )}
                             <div style={{ textAlign: "left" }}>
-                              <div style={{ fontSize: 12, letterSpacing: 1, color: COLORS.white }}>{item.label}</div>
+                              <div style={{ fontSize: 12, letterSpacing: 1, color: item.secret ? "#e0b3ff" : COLORS.white }}>
+                                {locked ? "???" : item.label}
+                              </div>
                               <div style={{ fontSize: 9, color: COLORS.amberDim }}>
-                                {owned ? (equipped ? "Equipped" : "Owned") : `${item.cost} 🏆`}
+                                {locked
+                                  ? "🔒 Hidden reward"
+                                  : owned
+                                  ? equipped
+                                    ? "Equipped"
+                                    : "Owned"
+                                  : `${item.cost} 🏆`}
                               </div>
                             </div>
                           </div>
                           <button
-                            onClick={() => purchaseItem("trails", item)}
-                            disabled={!owned && !affordable}
+                            onClick={() => !locked && purchaseItem("trails", item)}
+                            disabled={locked || (!owned && !affordable)}
                             style={{
                               padding: "5px 12px",
                               fontFamily: "inherit",
                               fontSize: 10,
                               letterSpacing: 1,
                               textTransform: "uppercase",
-                              cursor: !owned && !affordable ? "not-allowed" : "pointer",
-                              opacity: !owned && !affordable ? 0.4 : 1,
+                              cursor: locked || (!owned && !affordable) ? "not-allowed" : "pointer",
+                              opacity: locked || (!owned && !affordable) ? 0.4 : 1,
                               background: equipped ? COLORS.amber : "transparent",
                               color: equipped ? "#0a0a0a" : COLORS.amber,
                               border: `1px solid ${COLORS.amber}`,
                             }}
                           >
-                            {equipped ? "Equipped" : owned ? "Equip" : "Buy"}
+                            {locked ? "Locked" : equipped ? "Equipped" : owned ? "Equip" : "Buy"}
                           </button>
                         </div>
                       );
@@ -6797,6 +8956,7 @@ export default function AloneAmongTheStars() {
                       const owned = ownedItems.bullets.includes(item.id);
                       const equipped = shipConfig.bullet === item.id;
                       const affordable = trophies >= item.cost;
+                      const locked = item.secret && !owned;
                       return (
                         <div
                           key={item.id}
@@ -6807,43 +8967,57 @@ export default function AloneAmongTheStars() {
                             gap: 10,
                             padding: "8px 12px",
                             background: COLORS.panel,
-                            border: `1px solid ${COLORS.amberFaint}`,
+                            border: `1px solid ${item.secret ? "#e0b3ff" : COLORS.amberFaint}`,
                           }}
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                            <div
-                              style={{
-                                width: 6,
-                                height: 22,
-                                borderRadius: 3,
-                                background: BULLET_TYPE_COLORS[item.id],
-                                boxShadow: `0 0 8px ${BULLET_TYPE_COLORS[item.id]}`,
-                              }}
-                            />
+                            {locked ? (
+                              <div style={{ width: 6, height: 22, textAlign: "center", fontSize: 9, color: COLORS.amberDim }}>
+                                ?
+                              </div>
+                            ) : (
+                              <div
+                                style={{
+                                  width: 6,
+                                  height: 22,
+                                  borderRadius: 3,
+                                  background: BULLET_TYPE_COLORS[item.id],
+                                  boxShadow: `0 0 8px ${BULLET_TYPE_COLORS[item.id]}`,
+                                }}
+                              />
+                            )}
                             <div style={{ textAlign: "left" }}>
-                              <div style={{ fontSize: 12, letterSpacing: 1, color: COLORS.white }}>{item.label}</div>
+                              <div style={{ fontSize: 12, letterSpacing: 1, color: item.secret ? "#e0b3ff" : COLORS.white }}>
+                                {locked ? "???" : item.label}
+                              </div>
                               <div style={{ fontSize: 9, color: COLORS.amberDim, maxWidth: 160 }}>
-                                {equipped ? "Equipped" : owned ? item.detail || "\u00A0" : `${item.cost} 🏆${item.detail ? ` · ${item.detail}` : ""}`}
+                                {locked
+                                  ? "🔒 Hidden reward"
+                                  : equipped
+                                  ? "Equipped"
+                                  : owned
+                                  ? item.detail || "\u00A0"
+                                  : `${item.cost} 🏆${item.detail ? ` · ${item.detail}` : ""}`}
                               </div>
                             </div>
                           </div>
                           <button
-                            onClick={() => purchaseItem("bullets", item)}
-                            disabled={!owned && !affordable}
+                            onClick={() => !locked && purchaseItem("bullets", item)}
+                            disabled={locked || (!owned && !affordable)}
                             style={{
                               padding: "5px 12px",
                               fontFamily: "inherit",
                               fontSize: 10,
                               letterSpacing: 1,
                               textTransform: "uppercase",
-                              cursor: !owned && !affordable ? "not-allowed" : "pointer",
-                              opacity: !owned && !affordable ? 0.4 : 1,
+                              cursor: locked || (!owned && !affordable) ? "not-allowed" : "pointer",
+                              opacity: locked || (!owned && !affordable) ? 0.4 : 1,
                               background: equipped ? COLORS.amber : "transparent",
                               color: equipped ? "#0a0a0a" : COLORS.amber,
                               border: `1px solid ${COLORS.amber}`,
                             }}
                           >
-                            {equipped ? "Equipped" : owned ? "Equip" : "Buy"}
+                            {locked ? "Locked" : equipped ? "Equipped" : owned ? "Equip" : "Buy"}
                           </button>
                         </div>
                       );
@@ -6994,18 +9168,8 @@ export default function AloneAmongTheStars() {
               </>
             )}
 
-            {status === "start" && (
+            {status === "start" && !showShop && (
               <>
-                <div style={{ fontSize: 12, color: COLORS.cyan, lineHeight: 1.9, letterSpacing: 1 }}>
-                  Move to dodge · auto-fires forward
-                  <br />
-                  Arrow keys / WASD, or drag on mobile
-                  <br />
-                  <span style={{ color: COLORS.amber }}>Clear waves to level up your ship</span>
-                  <br />
-                  <span style={{ color: COLORS.red }}>Wave 25 brings a mega boss — beat it to win</span>
-                </div>
-
                 <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
                   <div
                     style={{
@@ -7232,6 +9396,27 @@ export default function AloneAmongTheStars() {
                   >
                     ⚔ Boss Rush
                   </button>
+                  {(completedGame ||
+                    FREE_EXPLORE_ORDER.some((w) => lifetimeStats[`${w}Defeated`]) ||
+                    Object.values(intergalacticTrophies).some((n) => n > 0)) && (
+                    <button
+                      onClick={() => setStatus("freeexplore")}
+                      className="vr-btn-alt"
+                      style={{
+                        padding: "10px 16px",
+                        background: "transparent",
+                        border: `1px solid #1fa85a`,
+                        color: "#7dffb0",
+                        fontFamily: "inherit",
+                        fontSize: 11,
+                        letterSpacing: 2,
+                        textTransform: "uppercase",
+                        cursor: "pointer",
+                      }}
+                    >
+                      🪐 Free Explore
+                    </button>
+                  )}
                   <button
                     onClick={() => setShowAchievements((v) => !v)}
                     className="vr-btn-alt"
@@ -7453,9 +9638,7 @@ export default function AloneAmongTheStars() {
                         flexDirection: "column",
                         gap: 8,
                         width: "100%",
-                        maxHeight: 260,
                         flexShrink: 0,
-                        overflowY: "auto",
                         padding: "2px 2px",
                       }}
                     >
@@ -7570,9 +9753,7 @@ export default function AloneAmongTheStars() {
                         flexDirection: "column",
                         gap: 6,
                         width: "100%",
-                        maxHeight: 260,
                         flexShrink: 0,
-                        overflowY: "auto",
                         padding: "4px 2px",
                       }}
                     >
@@ -7873,6 +10054,24 @@ export default function AloneAmongTheStars() {
                     New Game
                   </button>
                 </>
+              ) : status === "gameover" && vaultRetry ? (
+                <button
+                  onClick={beginVaultFight}
+                  className="vr-btn"
+                  style={{
+                    padding: "10px 28px",
+                    background: "transparent",
+                    border: `1px solid #c87cff`,
+                    color: "#c87cff",
+                    fontFamily: "inherit",
+                    fontSize: 13,
+                    letterSpacing: 3,
+                    textTransform: "uppercase",
+                    cursor: "pointer",
+                  }}
+                >
+                  Retry Vault
+                </button>
               ) : status === "gameover" && bossRushSelection ? (
                 <button
                   onClick={retryBossRush}
@@ -7893,7 +10092,7 @@ export default function AloneAmongTheStars() {
                 </button>
               ) : (
                 <button
-                  onClick={startGame}
+                  onClick={status === "start" ? startGame : playAgain}
                   className="vr-btn"
                   style={{
                     padding: "10px 28px",
@@ -7935,12 +10134,6 @@ export default function AloneAmongTheStars() {
           </div>
         )}
       </div>
-
-      <div style={{ color: COLORS.amberDim, fontSize: 11, letterSpacing: 1, textAlign: "center", maxWidth: WIDTH }}>
-        3 hits and the signal dies — clear a wave for a random power-up. Every 5th wave a boss
-        arrives with 25% more HP than the last; at wave 25 a mega boss appears with faster fire
-        and a radial burst attack. Beat it to win and earn a trophy. A system fault hits roughly
-        every 15 seconds: nav lock, weapons offline, or (rarely) a hull breach.
       </div>
     </div>
   );
